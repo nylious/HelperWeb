@@ -14,24 +14,35 @@ function AdminLoginForm(){
   const [error,setError]=useState('');
   const [loading,setLoading]=useState(false);
 
-  async function submit(e:React.FormEvent){
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+
     setLoading(true);
     setError('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
+      const { error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
 
-    if(error){
-      setError(error.message);
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      router.push('/admin');
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Unable to sign in right now.'
+      );
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push('/admin');
-    router.refresh();
   }
 
   return (
@@ -64,6 +75,12 @@ function AdminLoginForm(){
             autoComplete="current-password"
           />
         </div>
+
+        {params.get('error') === 'supabase-config' && (
+          <div style={{ marginTop: 12, color: '#ff9090', fontSize: 12 }}>
+            Supabase configuration is missing on the server.
+          </div>
+        )}
 
         {params.get('error') === 'not-admin' && (
           <div style={{ marginTop: 12, color: '#ff9090', fontSize: 12 }}>
