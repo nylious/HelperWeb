@@ -15,6 +15,8 @@ type SiteForm = {
   live_description: string
   primary_button_label: string
   secondary_button_label: string
+  primary_button_href: string
+  secondary_button_href: string
 }
 
 const initialForm: SiteForm = {
@@ -28,6 +30,8 @@ const initialForm: SiteForm = {
   live_description: '',
   primary_button_label: '',
   secondary_button_label: '',
+  primary_button_href: '/section/console',
+  secondary_button_href: '/section/discord',
 }
 
 export default function SettingsPage() {
@@ -171,6 +175,8 @@ export default function SettingsPage() {
                   <label className="settings-input-block"><span>TITLE LINE 3 (OPTIONAL)</span><input value={form.hero_title_line3} onChange={(e) => patch('hero_title_line3', e.target.value)} /></label>
                   <label className="settings-input-block"><span>PRIMARY BUTTON</span><input value={form.primary_button_label} onChange={(e) => patch('primary_button_label', e.target.value)} /></label>
                   <label className="settings-input-block"><span>SECONDARY BUTTON</span><input value={form.secondary_button_label} onChange={(e) => patch('secondary_button_label', e.target.value)} /></label>
+                  <label className="settings-input-block"><span>PRIMARY BUTTON DESTINATION</span><input value={form.primary_button_href} onChange={(e) => patch('primary_button_href', e.target.value)} placeholder="/section/console or https://..." /></label>
+                  <label className="settings-input-block"><span>SECONDARY BUTTON DESTINATION</span><input value={form.secondary_button_href} onChange={(e) => patch('secondary_button_href', e.target.value)} placeholder="/section/discord or https://..." /></label>
                   <label className="settings-input-block full"><span>HERO DESCRIPTION</span><textarea value={form.hero_description} onChange={(e) => patch('hero_description', e.target.value)} /></label>
                   <label className="settings-input-block full"><span>LIVE CARD DESCRIPTION</span><textarea value={form.live_description} onChange={(e) => patch('live_description', e.target.value)} /></label>
                 </div>

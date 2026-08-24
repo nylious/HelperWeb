@@ -1,8 +1,8 @@
-# V5 Logo Upload Fix
+# V6 Logo Upload Fix
 
-Run `supabase/upgrade_v5.sql` once in Supabase SQL Editor.
+Run `supabase/upgrade_v6.sql` once in Supabase SQL Editor.
 
-V5 replaces the Storage RLS policy that depended on `public.is_admin()` with an
+V6 replaces the Storage RLS policy that depended on `public.is_admin()` with an
 ownership check using `storage.objects.owner_id = auth.uid()`. The API route
 already verifies that the signed-in user has `profiles.role = 'admin'`.
 

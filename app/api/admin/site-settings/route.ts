@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+function normalizeHref(value: unknown) {
+  const raw = String(value ?? '').trim()
+  if (!raw) return '/'
+  if (raw.startsWith('/')) return raw
+  try {
+    const url = new URL(raw)
+    if (url.protocol === 'http:' || url.protocol === 'https:') return url.toString()
+  } catch {}
+  return '/'
+}
+
 async function getAdminClient() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -55,6 +66,8 @@ export async function POST(request: Request) {
       live_description: String(payload.live_description ?? '').trim(),
       primary_button_label: String(payload.primary_button_label ?? '').trim(),
       secondary_button_label: String(payload.secondary_button_label ?? '').trim(),
+      primary_button_href: normalizeHref(payload.primary_button_href),
+      secondary_button_href: normalizeHref(payload.secondary_button_href),
       updated_at: new Date().toISOString(),
     }
 

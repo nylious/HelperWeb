@@ -3,6 +3,12 @@ import { ArrowRight } from 'lucide-react'
 import { getSections } from '@/lib/data'
 import { getSiteSettings } from '@/lib/site-settings'
 
+function CtaLink({ href, className, children }: { href: string; className: string; children: React.ReactNode }) {
+  const external = /^https?:\/\//i.test(href)
+  if (external) return <a className={className} href={href} target="_blank" rel="noreferrer">{children}</a>
+  return <Link className={className} href={href || '/'}>{children}</Link>
+}
+
 export default async function Home() {
   const [sections, site] = await Promise.all([getSections(), getSiteSettings()])
   const count = sections.reduce(
@@ -39,12 +45,12 @@ export default async function Home() {
             </h1>
             <p>{site.hero_description}</p>
             <div className="home-actions">
-              <Link className="primary-btn" href="/section/console">
+              <CtaLink className="primary-btn" href={site.primary_button_href}>
                 {site.primary_button_label} <ArrowRight size={16} />
-              </Link>
-              <Link className="ghost-btn" href="/section/discord">
+              </CtaLink>
+              <CtaLink className="ghost-btn" href={site.secondary_button_href}>
                 {site.secondary_button_label}
-              </Link>
+              </CtaLink>
             </div>
           </div>
 

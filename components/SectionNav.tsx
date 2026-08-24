@@ -10,7 +10,7 @@ const sections = [
 
 export default function SectionNav({ active }: { active?: string }) {
   return (
-    <div className="helper-section-nav">
+    <div className="helper-section-nav helper-section-nav-below-hero">
       <div className="helper-nav-row">
         <Link href="/" className="helper-back-btn">
           <ArrowLeft size={15} />

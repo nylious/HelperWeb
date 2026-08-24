@@ -289,5 +289,14 @@ Built for fast GM workflows.
 - Settings has explicit back/open-helper controls.
 
 
-## V5 Logo Upload Fix
-Run `supabase/upgrade_v5.sql` once to fix Storage RLS for logo uploads.
+## V6 Logo Upload Fix
+Run `supabase/upgrade_v6.sql` once to fix Storage RLS for logo uploads.
+
+## V7 Refinements
+- Restored the original Normal / Nova weapon generator system from the desktop Helper: degree + seal + plus.
+- Kept Egy Normal Weapons on its separate chat-command system.
+- Added editable homepage button destinations to Admin Settings.
+- Moved Helper Back + section shortcuts directly above the command search/generator area.
+- Refined public Helper spacing and proportions to match the Admin dashboard's visual quality.
+
+Run `supabase/upgrade_v7.sql` once for the homepage CTA destination fields.
