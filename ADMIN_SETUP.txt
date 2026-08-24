@@ -1,0 +1,35 @@
+DO THIS FIRST IN SUPABASE
+
+1) Open Supabase -> SQL Editor -> New query.
+2) Copy/paste the ENTIRE contents of:
+   supabase/schema.sql
+3) Run it successfully.
+
+The previous error:
+ERROR: 42P01 relation "public.profiles" does not exist
+happened because schema.sql had not been run yet.
+
+AFTER THE SCHEMA RUNS
+
+Your existing Auth user needs a profile row once.
+
+Replace YOUR_EMAIL with the exact email you created in Supabase Authentication:
+
+INSERT INTO public.profiles (id, role)
+SELECT id, 'admin'
+FROM auth.users
+WHERE email = 'YOUR_EMAIL'
+ON CONFLICT (id)
+DO UPDATE SET role = 'admin';
+
+Then:
+- Open /admin/login
+- Sign in with that Auth account
+- The middleware will allow the account because profiles.role = 'admin'
+
+The schema also creates a trigger so future Auth users get a profile row
+automatically with role = 'user'.
+
+IMPORTANT
+Do not expose your Supabase secret/service_role key in Vercel client envs.
+Keep only the public URL and public/publishable key in NEXT_PUBLIC_* variables.
