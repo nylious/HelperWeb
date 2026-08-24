@@ -1,6 +1,8 @@
 import './globals.css'
 import { Command, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import AdminAccountMenu from '@/components/AdminAccountMenu'
 
 export const metadata = {
   title: 'Damanhour City GM Helper',
@@ -8,7 +10,24 @@ export const metadata = {
   icons: { icon: '/favicon.svg' },
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  let email = ''
+  let displayName = ''
+  let isAdmin = false
+
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      email = user.email ?? ''
+      const { data: profile } = await supabase.from('profiles').select('role,display_name').eq('id', user.id).maybeSingle()
+      isAdmin = profile?.role === 'admin'
+      displayName = (profile?.display_name ?? '').trim()
+    }
+  } catch {
+    // Public pages remain available even if optional admin session metadata is unavailable.
+  }
+
   return (
     <html lang="en">
       <body>
@@ -21,7 +40,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <div className="brand-subtitle">Commands / Codes GM Helper</div>
               </div>
             </Link>
-            <Link href="/admin/login" className="admin-link"><ShieldCheck size={16} /> Admin</Link>
+            <AdminAccountMenu email={email} displayName={displayName} isAdmin={isAdmin} />
           </div>
         </header>
         <main>{children}</main>

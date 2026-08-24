@@ -32,6 +32,15 @@ export async function middleware(
   const key =
     getPublicKey()
 
+  const remember =
+    request.cookies.get('dch_remember')?.value
+
+  if (!remember) {
+    const login = request.nextUrl.clone()
+    login.pathname = '/admin/login'
+    return NextResponse.redirect(login)
+  }
+
   if (!url || !key) {
     const login =
       request.nextUrl.clone()

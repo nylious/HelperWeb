@@ -1,17 +1,15 @@
+# 🏙️ Damanhour City GM Helper
+
 <div align="center">
 
-# Damanhour City GM Helper
+**A modern Gold × Black command center for Damanhour City GMs.**
 
-### Commands • Codes • Live GM Knowledge Base
+Fast lookup • Live catalog • Console generators • Admin control • Supabase • Vercel
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database%20%2B%20Auth-1cce8a?style=for-the-badge&logo=supabase)](https://supabase.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-
-A modern, gold-on-black web replacement for the Damanhour City desktop GM Helper.
-
-**Live catalog • Admin CRUD • Supabase Auth • Realtime-ready • Vercel-friendly**
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database%20%2B%20Auth-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000?logo=vercel&logoColor=white)](https://vercel.com/)
 
 </div>
 
@@ -19,229 +17,266 @@ A modern, gold-on-black web replacement for the Damanhour City desktop GM Helper
 
 ## ✨ What it does
 
-| Area | What you get |
-| --- | --- |
-| 🎮 **Console Commands** | Normal commands, EU/CH groups, Uniques and Roc/Medusa entries |
-| 💬 **Discord Commands** | Categories + searchable command/code browser |
-| 🕹️ **In-game Commands** | Live catalog with the same category structure as the original Helper |
-| 🧰 **Item Codes** | Item / weapon generator workflows and addable database categories |
-| 🔐 **Admin** | Protected login, live CRUD, catalog sync and deployment-aware settings |
-| 🗄️ **Database** | Supabase Postgres + RLS + Auth profile roles |
+Damanhour City GM Helper turns the old desktop helper workflow into a live web workspace.
+
+- ⚡ **Discord Commands** — categorized command lookup with copy-ready output.
+- 🎮 **In-game Commands** — organized command catalog.
+- 🧩 **Console Commands** — GM commands, EU/CH variants and unique spawners.
+- ⚔️ **Item / Weapon Generators** — built around the original Helper logic.
+- 🔐 **Admin Console** — edit live entries without rebuilding the public site.
+- 🖼️ **Homepage Controls** — change the logo and homepage copy from Admin → Settings.
+- 👤 **Admin Profile** — display name + password controls in a slide-over account panel.
+- ⏱️ **Security** — 15-minute inactivity timeout + optional Remember Me.
+- 🗄️ **Supabase** — database, authentication, role checks and live settings.
+- 🚀 **Vercel** — Git-driven deployment.
 
 ---
 
-## 🎨 Design
-
-The interface uses a deliberately restrained **Gold × Black** visual system:
-
-- no bright blue/purple template look
-- dense admin workspace inspired by professional dashboards
-- compact cards and clear hierarchy
-- monospace command/code presentation
-- responsive layouts for desktop and smaller screens
-
----
-
-## 🧱 Stack
+## 🗂️ Sections
 
 ```text
-Next.js
-├─ App Router
-├─ React
-├─ TypeScript
-└─ Lucide Icons
-
-Supabase
-├─ Postgres
-├─ Authentication
-├─ Row Level Security
-└─ Realtime-ready tables
-
-Vercel
-└─ Production hosting / automatic deploys
+Damanhour City GM Helper
+│
+├── Discord Commands
+│   ├── Streaming / Nitro Commands
+│   ├── Silk - Gold - Package Commands
+│   ├── CHAR Commands
+│   ├── Quests Commands
+│   ├── Card Collection Commands
+│   └── Ban Commands
+│
+├── In-game Commands
+│   ├── Titles / Streaming Commands
+│   ├── Silk / Gift Commands
+│   ├── Character Commands
+│   ├── Inventory Commands
+│   └── Plus / FB Commands
+│
+├── Item Codes
+│   └── Item + Weapon Generators
+│
+└── Console Commands
+    ├── Normal Commands
+    ├── Normal EU
+    ├── Normal CH
+    ├── Zealot Uniques
+    ├── Temple Uniques
+    └── Roc - Medusa
 ```
 
 ---
 
-## 🚀 Deployment
+## 🛠️ Stack
 
-### 1. GitHub
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js + React + TypeScript |
+| Styling | Custom Gold × Black UI |
+| Icons | Lucide React |
+| Database | Supabase PostgreSQL |
+| Authentication | Supabase Auth |
+| Storage | Supabase Storage |
+| Hosting | Vercel |
+| Source | GitHub |
 
-Push the full project to a GitHub repository.
+---
 
-### 2. Vercel
+## 🔐 Admin security
 
-Import the repository as a **Next.js** project.
+Admin access is **role-based**.
 
-### 3. Environment Variables
-
-Set these in Vercel:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_PUBLIC_OR_PUBLISHABLE_KEY
+```text
+Supabase Auth user
+        ↓
+public.profiles
+        ↓
+role = admin
+        ↓
+/admin
 ```
 
-For the server-side admin catalog sync endpoint, also set:
+The Admin workspace also includes:
+
+- **Remember Me** for browser persistence.
+- **15-minute inactivity timeout**.
+- Profile drawer with display name.
+- Password change from the account drawer.
+- Server-side protection through middleware.
+
+> Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser.
+
+---
+
+## ⚙️ Environment variables
+
+Create these in Vercel:
 
 ```env
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-> ⚠️ **Never** prefix the service-role key with `NEXT_PUBLIC_` and never commit it to GitHub.
+`SUPABASE_SERVICE_ROLE_KEY` is server-only and is used for protected admin operations such as catalog sync, profile updates and logo uploads.
 
 ---
 
 ## 🗄️ Supabase setup
 
-Open:
+### Existing project
 
-**Supabase → SQL Editor → New Query**
+If you already ran the original `setup.sql`, run:
 
-Run:
+```text
+supabase/upgrade_v2.sql
+```
+
+This adds:
+
+- `profiles.display_name`
+- `site_settings`
+- public site asset storage bucket
+- realtime support for site settings
+
+### Fresh project
+
+For a new Supabase project, run:
 
 ```text
 supabase/setup.sql
 ```
 
-That file is the single setup script for the current project. It contains:
+That file includes schema + policies + catalog seed.
 
-- tables
-- indexes/constraints
-- profiles + admin role support
-- authentication profile trigger
-- RLS policies
-- realtime table registration
-- the verified seed catalog currently bundled with the project
+---
 
-### Create the first admin
+## 🖼️ Homepage settings
 
-Create the user in:
-
-**Supabase → Authentication → Users**
-
-Then run:
-
-```sql
-INSERT INTO public.profiles (id, role)
-SELECT id, 'admin'
-FROM auth.users
-WHERE email = 'YOUR_EMAIL'
-ON CONFLICT (id)
-DO UPDATE SET role = 'admin';
-```
-
-After that, open:
+From:
 
 ```text
-/admin/login
+Admin
+  → Settings
+  → Home Identity
 ```
 
----
+You can change:
 
-## 🔄 Catalog sync
+- Logo
+- Overline
+- Hero title lines
+- Hero description
+- Live card title
+- Live card description
+- Primary button text
+- Secondary button text
 
-The admin includes a **Sync catalog** action.
-
-It is intentionally server-side and protected:
-
-```text
-Admin session
-    ↓
-role = admin
-    ↓
-server endpoint
-    ↓
-Supabase service-role client
-    ↓
-verified source catalog
-    ↓
-Postgres
-```
-
-This makes first-time database population recoverable without reopening the original desktop project.
+The logo can be uploaded directly to Supabase Storage.
 
 ---
 
-## 📦 Project structure
-
-```text
-app/
-├─ admin/
-│  ├─ commands/
-│  ├─ login/
-│  ├─ settings/
-│  └─ page.tsx
-├─ api/admin/sync/
-├─ section/[slug]/
-├─ auth/signout/
-├─ page.tsx
-└─ globals.css
-
-components/
-├─ AdminCommandEditor.tsx
-├─ CommandBrowser.tsx
-└─ ItemGenerators.tsx
-
-lib/
-├─ data.ts
-├─ static-data.ts
-├─ types.ts
-└─ supabase/
-
-supabase/
-├─ schema.sql
-├─ seed.sql
-└─ setup.sql
-```
-
----
-
-## 🧭 Source-of-truth strategy
-
-The repository keeps a bundled catalog in `lib/static-data.ts` so the public helper can still render when the database is temporarily unavailable.
-
-Once Supabase is populated, the live database becomes the source of truth for the web app and the Admin Panel.
-
-This is intentional: **the site should never become a blank page just because the database is temporarily unavailable.**
-
----
-
-## 🛡️ Security rules
-
-- Public catalog data is readable through RLS.
-- Write operations require an authenticated `admin` profile.
-- The service-role key is server-only.
-- Admin authentication is handled by Supabase Auth.
-- `/admin/*` is protected by middleware + role verification.
-
----
-
-## 🧪 Local development
+## 🧑‍💻 Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:3000
 ```
 
+Admin:
+
+```text
+http://localhost:3000/admin/login
+```
+
 ---
 
-## 🧹 Notes
+## 🚀 Deploy to Vercel
 
-The original desktop Helper remains the reference source for command structure and generator behavior. The web project is designed to replace the **distribution/update pain** with a live database-backed catalog while preserving the command organization users already know.
+1. Push the repository to GitHub.
+2. Import the repository in Vercel.
+3. Set the three environment variables above.
+4. Deploy.
+5. Run the required Supabase SQL migration.
+6. Create your Admin user in Supabase Auth.
+7. Promote the user to `admin` in `public.profiles`.
+
+Example:
+
+```sql
+INSERT INTO public.profiles (id, role, display_name)
+SELECT id, 'admin', 'Damanhour Admin'
+FROM auth.users
+WHERE email = 'YOUR_EMAIL'
+ON CONFLICT (id)
+DO UPDATE SET
+  role = 'admin',
+  display_name = excluded.display_name;
+```
+
+---
+
+## 🧭 Project map
+
+```text
+app/
+├── admin/
+│   ├── commands/
+│   ├── login/
+│   ├── settings/
+│   └── page.tsx
+├── api/
+│   └── admin/
+├── section/
+└── page.tsx
+
+components/
+├── AdminAccountMenu.tsx
+├── AdminCommandEditor.tsx
+├── AdminSessionGuard.tsx
+├── CommandBrowser.tsx
+└── ItemGenerators.tsx
+
+lib/
+├── data.ts
+├── site-settings.ts
+├── static-data.ts
+└── supabase/
+
+supabase/
+├── setup.sql
+├── schema.sql
+└── upgrade_v2.sql
+```
+
+---
+
+## 📝 Design direction
+
+The UI intentionally avoids the typical blue/purple SaaS-template look.
+
+**Direction:**
+
+> **Gold × Black • premium • minimal • GM utility • dense but readable**
+
+The public helper and Admin console share the same visual language while keeping different information densities.
+
+---
+
+## 📜 Notes
+
+This repository is the web successor to the Damanhour City desktop GM Helper. The command catalog remains grounded in the existing Helper source and verified catalog data; the database becomes the live source of truth once synced.
 
 ---
 
 <div align="center">
 
-**DAMANHOUR CITY • GM UTILITY**
-
-yl3n kosom damanhour.
+**Damanhour City • GM Utility**  
+Built for fast GM workflows.
 
 </div>

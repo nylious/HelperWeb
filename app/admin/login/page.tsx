@@ -2,6 +2,7 @@
 
 import {
   Suspense,
+  useEffect,
   useState
 } from 'react'
 import {
@@ -33,6 +34,9 @@ function AdminLoginForm() {
   const [password, setPassword] =
     useState('')
 
+  const [rememberMe, setRememberMe] =
+    useState(true)
+
   const [showPassword, setShowPassword] =
     useState(false)
 
@@ -41,6 +45,11 @@ function AdminLoginForm() {
 
   const [loading, setLoading] =
     useState(false)
+
+  useEffect(() => {
+    const remembered = window.localStorage.getItem('dch_admin_email')
+    if (remembered) setEmail(remembered)
+  }, [])
 
   async function submit(
     event: React.FormEvent<HTMLFormElement>
@@ -88,6 +97,14 @@ function AdminLoginForm() {
           authError.message
         )
         return
+      }
+
+      if (rememberMe) {
+        window.localStorage.setItem('dch_admin_email', email.trim())
+        document.cookie = 'dch_remember=1; Path=/; Max-Age=2592000; SameSite=Lax'
+      } else {
+        window.localStorage.removeItem('dch_admin_email')
+        document.cookie = 'dch_remember=0; Path=/; SameSite=Lax'
       }
 
       router.replace('/admin')
@@ -187,6 +204,12 @@ function AdminLoginForm() {
               </div>
             )}
 
+            {queryError === 'inactive' && (
+              <div className="auth-alert auth-alert-info">
+                You were signed out after 15 minutes of inactivity.
+              </div>
+            )}
+
             {queryError === 'supabase-config' && (
               <div className="auth-alert auth-alert-error">
                 Supabase configuration is missing
@@ -270,6 +293,18 @@ function AdminLoginForm() {
                   </button>
                 </div>
               </label>
+
+              <div className="remember-row">
+                <label className="remember-check">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(event) => setRememberMe(event.target.checked)}
+                  />
+                  <span>Remember me</span>
+                </label>
+                <span>15 min inactivity timeout</span>
+              </div>
 
               <button
                 type="submit"

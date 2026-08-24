@@ -39,9 +39,29 @@ create table if not exists public.entries (
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   role text not null default 'user' check (role in ('user','admin')),
+  display_name text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+
+create table if not exists public.site_settings (
+  id integer primary key default 1 check (id = 1),
+  logo_url text not null default '/brand-mark.svg',
+  hero_overline text not null default 'GM COMMANDS / CODES',
+  hero_title_line1 text not null default 'Everything your GM needs.',
+  hero_title_line2 text not null default 'One clean place.',
+  hero_title_line3 text not null default '',
+  hero_description text not null default 'Fast command lookup, unique spawners and item generators — organized exactly around the Damanhour City GM workflow.',
+  live_title text not null default 'LIVE KNOWLEDGE BASE',
+  live_description text not null default 'One live catalog for the GM team. Admin changes are reflected from the central database instead of waiting for a desktop rebuild.',
+  primary_button_label text not null default 'Open Console Commands',
+  secondary_button_label text not null default 'Browse Discord',
+  updated_at timestamptz not null default now()
+);
+
+insert into public.site_settings (id) values (1) on conflict (id) do nothing;
+insert into storage.buckets (id, name, public) values ('site-assets','site-assets',true) on conflict (id) do update set public = excluded.public;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -100,6 +120,14 @@ $$;
 
 grant execute on function public.is_admin() to anon, authenticated;
 
+alter table public.site_settings enable row level security;
+drop policy if exists site_settings_public_read on public.site_settings;
+create policy site_settings_public_read on public.site_settings for select to anon, authenticated using (true);
+drop policy if exists site_settings_admin_write on public.site_settings;
+create policy site_settings_admin_write on public.site_settings for all to authenticated using (public.is_admin()) with check (public.is_admin());
+grant select on public.site_settings to anon, authenticated;
+grant insert, update, delete on public.site_settings to authenticated;
+
 alter table public.sections enable row level security;
 alter table public.categories enable row level security;
 alter table public.entries enable row level security;
@@ -130,6 +158,7 @@ begin
   alter publication supabase_realtime add table public.sections;
   alter publication supabase_realtime add table public.categories;
   alter publication supabase_realtime add table public.entries;
+  alter publication supabase_realtime add table public.site_settings;
 exception when duplicate_object then null;
 end $$;
 

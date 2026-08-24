@@ -49,6 +49,8 @@ export default async function AdminPage() {
   )
 
   const dataLooksLive = totalEntries > 0
+  const { data: profile } = await supabase.from('profiles').select('display_name').eq('id', user?.id ?? '').maybeSingle()
+  const displayName = (profile?.display_name ?? '').trim()
 
   return (
     <div className="dashboard-page">
@@ -116,7 +118,7 @@ export default async function AdminPage() {
               <div className="dashboard-kicker">ADMIN / OVERVIEW</div>
               <h1>Control center</h1>
               <p>
-                Welcome back, <strong>{user?.email ?? 'Administrator'}</strong>
+                Welcome back, <strong>{displayName || user?.email || 'Administrator'}</strong>
               </p>
             </div>
 

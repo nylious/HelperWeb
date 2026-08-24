@@ -6,6 +6,7 @@ import {
   Copy,
   FilePlus2,
   RefreshCw,
+  ArrowLeft,
   Save,
   Search,
   Sparkles,
@@ -272,12 +273,18 @@ export default function AdminCommandEditor({
   return (
     <div className="editor-page">
       <div className="editor-header">
-        <div>
-          <div className="dashboard-kicker">ADMIN / COMMAND MANAGER</div>
-          <h1>{currentSection?.name ?? 'Catalog'}</h1>
-          <p>
-            Edit the live catalog without rebuilding the public helper.
-          </p>
+        <div className="editor-header-left">
+          <button className="editor-back-btn" onClick={() => (window.location.href = '/admin')}>
+            <ArrowLeft size={15} />
+            Back to dashboard
+          </button>
+          <div>
+            <div className="dashboard-kicker">ADMIN / COMMAND MANAGER</div>
+            <h1>{currentSection?.name ?? 'Catalog'}</h1>
+            <p>
+              Edit the live catalog without rebuilding the public helper.
+            </p>
+          </div>
         </div>
         <button
           className="editor-toolbar-btn"
@@ -497,6 +504,13 @@ export default function AdminCommandEditor({
               </label>
 
               <div className="editor-actions">
+                <button
+                  className="editor-back-action"
+                  onClick={() => (window.location.href = '/admin')}
+                >
+                  <ArrowLeft size={16} />
+                  Back
+                </button>
                 <button
                   className="editor-save-btn"
                   onClick={saveEntry}

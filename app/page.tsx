@@ -1,48 +1,87 @@
 import Link from 'next/link'
-import { ArrowRight, Bot, Boxes, Terminal, Swords } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { getSections } from '@/lib/data'
-
-const icons = { discord: Bot, ingame: Terminal, items: Boxes, console: Swords }
+import { getSiteSettings } from '@/lib/site-settings'
 
 export default async function Home() {
-  const sections = await getSections()
-  const count = sections.reduce((n,s)=>n+s.categories.reduce((m,c)=>m+c.entries.length,0),0)
-  return <>
-    <section className="hero">
-      <div className="hero-grid">
-        <div className="hero-card">
-          <div className="eyebrow">GM COMMANDS / CODES</div>
-          <h1>Everything your GM needs.<br/>One clean place.</h1>
-          <p>Fast command lookup, unique spawners and item generators — organized exactly around the Damanhour City GM workflow.</p>
-          <div style={{display:'flex',gap:10,marginTop:24,flexWrap:'wrap'}}>
-            <Link className="primary-btn" href="/section/console">Open Console Commands <ArrowRight size={16} style={{verticalAlign:'middle'}}/></Link>
-            <Link className="ghost-btn" href="/section/discord">Browse Discord</Link>
-          </div>
-        </div>
-        <div className="hero-side">
-          <div>
-            <div className="eyebrow">LIVE KNOWLEDGE BASE</div>
-            <p style={{fontSize:13}}>One live catalog for the GM team. Admin changes are reflected from the central database instead of waiting for a desktop rebuild.</p>
-          </div>
-          <div>
-            <div className="stat"><span className="stat-label">Catalogued entries</span><span className="stat-value">{count || '—'}</span></div>
-            <div className="stat"><span className="stat-label">Sections</span><span className="stat-value">4</span></div>
-            <div className="stat"><span className="stat-label">Theme</span><span className="stat-value">Gold / Black</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
+  const [sections, site] = await Promise.all([getSections(), getSiteSettings()])
+  const count = sections.reduce(
+    (n, section) => n + section.categories.reduce((m, c) => m + c.entries.length, 0),
+    0,
+  )
 
-    <section className="section-grid">
-      {sections.map(section => {
-        const Icon = icons[section.slug]
-        const entries = section.categories.reduce((n,c)=>n+c.entries.length,0)
-        return <Link key={section.slug} href={section.slug==='items'?'/section/items':`/section/${section.slug}`} className="section-card">
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}><div style={{width:42,height:42,borderRadius:11,display:'grid',placeItems:'center',background:'rgba(212,173,78,.09)',color:'var(--accent)'}}><Icon size={21}/></div><ArrowRight size={18} color="#64707c"/></div>
-          <h2>{section.name}</h2><p>{section.description}</p>
-          <div className="section-meta"><span className="pill">{entries || 'Live'}</span><span>{section.categories.length} categories</span></div>
-        </Link>
-      })}
-    </section>
-  </>
+  return (
+    <>
+      <section className="hero home-hero">
+        <div className="home-logo-stage">
+          <div className="home-logo-ring" />
+          <div className="home-logo-glow" />
+          <div className="home-logo-card" title="Damanhour City">
+            <img src={site.logo_url || '/brand-mark.svg'} alt="Damanhour City logo" className="home-logo-image" />
+          </div>
+          <div className="home-logo-wordmark">DAMANHOUR CITY</div>
+          <div className="home-logo-caption">COMMANDS / CODES GM HELPER</div>
+        </div>
+
+        <div className="hero-grid home-hero-grid">
+          <div className="hero-card home-copy-card">
+            <div className="eyebrow">{site.hero_overline}</div>
+            <h1>
+              {site.hero_title_line1}
+              <br />
+              {site.hero_title_line2}
+              {site.hero_title_line3 && (
+                <>
+                  <br />
+                  {site.hero_title_line3}
+                </>
+              )}
+            </h1>
+            <p>{site.hero_description}</p>
+            <div className="home-actions">
+              <Link className="primary-btn" href="/section/console">
+                {site.primary_button_label} <ArrowRight size={16} />
+              </Link>
+              <Link className="ghost-btn" href="/section/discord">
+                {site.secondary_button_label}
+              </Link>
+            </div>
+          </div>
+
+          <div className="hero-side home-live-card">
+            <div>
+              <div className="eyebrow">{site.live_title}</div>
+              <p>{site.live_description}</p>
+            </div>
+            <div>
+              <div className="stat"><span className="stat-label">Catalogued entries</span><span className="stat-value">{count || '—'}</span></div>
+              <div className="stat"><span className="stat-label">Sections</span><span className="stat-value">{sections.length}</span></div>
+              <div className="stat"><span className="stat-label">Theme</span><span className="stat-value">Gold / Black</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-grid">
+        {sections.map((section) => {
+          const entries = section.categories.reduce((n, c) => n + c.entries.length, 0)
+          return (
+            <Link
+              key={section.slug}
+              href={section.slug === 'items' ? '/section/items' : `/section/${section.slug}`}
+              className="section-card"
+            >
+              <div className="section-card-top">
+                <div className="section-card-mark">{section.name.slice(0, 1)}</div>
+                <ArrowRight size={18} />
+              </div>
+              <h2>{section.name}</h2>
+              <p>{section.description}</p>
+              <div className="section-meta"><span className="pill">{entries || 'Live'}</span><span>{section.categories.length} categories</span></div>
+            </Link>
+          )
+        })}
+      </section>
+    </>
+  )
 }

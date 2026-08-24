@@ -1,50 +1,37 @@
-# 🚀 Production Deploy Checklist
+# Deployment checklist
 
 ## GitHub
+- [ ] Replace repository contents with this project.
+- [ ] Commit changes to `main`.
 
-- Upload the entire project contents to the repository.
-- Commit directly to `main`.
-
-## Vercel Environment Variables
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-```
-
-The first two are public client variables. The service-role key is server-only.
+## Vercel environment
+- [ ] `NEXT_PUBLIC_SUPABASE_URL`
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` (server-side only)
 
 ## Supabase
+### Existing project
+- [ ] Run `supabase/upgrade_v2.sql`
 
-1. SQL Editor → New Query.
-2. Run `supabase/setup.sql` once.
-3. Authentication → Users → create the admin account.
-4. Set the role:
+### New project
+- [ ] Run `supabase/setup.sql`
 
-```sql
-INSERT INTO public.profiles (id, role)
-SELECT id, 'admin'
-FROM auth.users
-WHERE email = 'YOUR_EMAIL'
-ON CONFLICT (id)
-DO UPDATE SET role = 'admin';
-```
+## Admin user
+- [ ] Create the user in Supabase Authentication.
+- [ ] Insert/update `public.profiles.role = 'admin'`.
+- [ ] Optional: set `display_name`.
 
-## First Admin Login
+## First run
+- [ ] Open `/admin/login`.
+- [ ] Sign in.
+- [ ] Open Settings.
+- [ ] Sync catalog.
+- [ ] Set the homepage logo and copy.
+- [ ] Test the profile drawer.
+- [ ] Test inactivity timeout.
 
-Open:
-
-```text
-/admin/login
-```
-
-Then:
-
-```text
-/admin/settings
-```
-
-Click **Sync catalog** once.
-
-The dashboard should show the live catalog and section cards.
+## Weapon generator
+- [ ] Normal + Nova: verify EU and CH output.
+- [ ] Degree 11: verify Normal / Seal of Nova options.
+- [ ] Plus 1–12 and 255.
+- [ ] Egy: verify `!OneHandegy 0` style output.
