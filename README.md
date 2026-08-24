@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏙️ Damanhour City GM Helper
+# Damanhour City GM Helper
 
 ### Commands • Codes • Live GM Knowledge Base
 
@@ -242,6 +242,6 @@ The original desktop Helper remains the reference source for command structure a
 
 **DAMANHOUR CITY • GM UTILITY**
 
-Made for fast GM workflows, clean command management and live updates.
+yl3n kosom damanhour.
 
 </div>
