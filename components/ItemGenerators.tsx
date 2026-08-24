@@ -1,32 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 
-const weaponEU = ['!OneHand', '!TwoHand', '!Axe', '!Dagger', '!Crossbow', '!Staff', '!Warlock', '!Cleric', '!Bard', '!EuShield']
-const weaponCH = ['!Sword', '!Blade', '!Spear', '!Glaive', '!Bow', '!ChShield']
+const weaponEU = ['!OneHand', '!TwoHand', '!Axe', '!Dagger', '!Crossbow', '!Staff', '!Warlock', '!Cleric', '!Bard', '!EuShield'] as const
+const weaponCH = ['!Sword', '!Blade', '!Spear', '!Glaive', '!Bow', '!ChShield'] as const
 
-const unifiedEU = [
-  ['OneHanded', 'SWORD_'],
-  ['TwoHanded', 'TSWORD_'],
-  ['CrossBow', 'CROSSBOW_'],
-  ['Dagger', 'DAGGER_'],
-  ['Staff', 'TSTAFF_'],
-  ['Harp', 'HARP_'],
-  ['Cleric', 'STAFF_'],
-  ['Warlock', 'DARKSTAFF_'],
-  ['Shield', 'SHIELD_'],
-  ['Axe', 'AXE_'],
-] as const
-
-const unifiedCH = [
-  ['Spear', 'SPEAR_'],
-  ['Bow', 'BOW_'],
-  ['Glavie', 'TBLADE_'],
-  ['Sword', 'SWORD_'],
-  ['Blade', 'BLADE_'],
-  ['Shield', 'SHIELD_'],
-] as const
+type WeaponSystem = 'normal' | 'egy' | 'nova'
 
 export default function ItemGenerators() {
   const [itemMode, setItemMode] = useState<'normal'|'egy'|'nova'>('normal')
@@ -35,46 +15,25 @@ export default function ItemGenerators() {
   const [gender, setGender] = useState<'male'|'female'>('male')
   const [plus, setPlus] = useState(0)
 
-  const [weaponSystem, setWeaponSystem] = useState<'unified'|'egy'>('unified')
+  const [weaponSystem, setWeaponSystem] = useState<WeaponSystem>('normal')
   const [weaponRegion, setWeaponRegion] = useState<'eu'|'ch'>('eu')
-  const [weapon, setWeapon] = useState('OneHanded')
-  const [degree, setDegree] = useState(1)
-  const [seal, setSeal] = useState('A')
-  const [unifiedPlus, setUnifiedPlus] = useState(1)
-  const [egyWeapon, setEgyWeapon] = useState('!OneHand')
-  const [egyPlus, setEgyPlus] = useState(0)
+  const [weapon, setWeapon] = useState<string>(weaponEU[0])
+  const [weaponPlus, setWeaponPlus] = useState(0)
   const [copied, setCopied] = useState('')
 
   const itemTemplate = itemMode === 'normal' ? 'a' : itemMode === 'egy' ? 'set_a' : 'a_rare'
   const itemCode = `!makeset ${region} 11 ${itemTemplate} ${type} ${gender} ${plus}`
 
-  const unifiedWeapons = weaponRegion === 'eu' ? unifiedEU : unifiedCH
-  const unifiedCodePart = useMemo(
-    () => (unifiedWeapons.find(([name]) => name === weapon)?.[1] ?? ''),
-    [unifiedWeapons, weapon],
-  )
-  const unifiedSealOptions = degree === 11
-    ? [['Normal', 'A'], ['Seal Of Nova', 'A_RARE']]
-    : [['Normal', 'A'], ['Seal Of Star', 'A_RARE'], ['Seal Of Moon', 'B_RARE'], ['Seal Of Sun', 'C_RARE']]
+  const availableWeapons = weaponRegion === 'eu' ? weaponEU : weaponCH
 
-  const unifiedCode = unifiedCodePart
-    ? `/MAKEITEM ITEM_${weaponRegion.toUpperCase()}_${unifiedCodePart}${String(degree).padStart(2, '0')}_${seal} ${unifiedPlus}`
+  const weaponCode = weapon
+    ? `${weapon}${weaponSystem === 'egy' ? 'egy' : weaponSystem === 'nova' ? 'rare' : ''} ${weaponPlus}`
     : ''
-  const egyWeapons = weaponRegion === 'eu' ? weaponEU : weaponCH
-  const egyCode = `${egyWeapon}${'egy'} ${egyPlus}`
 
-  function setUnifiedRegion(next: 'eu'|'ch') {
+  function setWeaponRegionSafe(next: 'eu' | 'ch') {
     setWeaponRegion(next)
-    setWeapon(next === 'eu' ? 'OneHanded' : 'Spear')
-    setSeal('A')
-  }
-
-  function setDegreeSafe(value: number) {
-    setDegree(value)
-    const valid = (value === 11
-      ? ['A', 'A_RARE']
-      : ['A', 'A_RARE', 'B_RARE', 'C_RARE'])
-    if (!valid.includes(seal)) setSeal('A')
+    setWeapon(next === 'eu' ? weaponEU[0] : weaponCH[0])
+    setWeaponPlus(0)
   }
 
   async function copy(label: string, value: string) {
@@ -112,47 +71,71 @@ export default function ItemGenerators() {
           <CodeResult value={itemCode} copied={copied === 'item'} onCopy={() => copy('item', itemCode)} />
         </GeneratorCard>
 
-        <GeneratorCard title="WEAPON GENERATOR" subtitle="Normal + Nova use the original degree / seal generator. Egy keeps the original !weaponegy system.">
+        <GeneratorCard title="WEAPON GENERATOR" subtitle="Normal, Nova and Egy use the original Helper weapon systems.">
           <Field label="WEAPON SYSTEM">
             <VariantRow>
-              <VariantButton active={weaponSystem === 'unified'} onClick={() => setWeaponSystem('unified')}>Normal + Nova</VariantButton>
-              <VariantButton active={weaponSystem === 'egy'} onClick={() => setWeaponSystem('egy')}>Egy Normal Weapons</VariantButton>
+              {(['normal','egy','nova'] as const).map((mode) => (
+                <VariantButton
+                  key={mode}
+                  active={weaponSystem === mode}
+                  onClick={() => {
+                    setWeaponSystem(mode)
+                    setWeaponPlus(0)
+                  }}
+                >
+                  {mode === 'normal' ? 'Normal Weapons' : mode === 'egy' ? 'Egy Normal Weapons' : 'Nova Weapons'}
+                </VariantButton>
+              ))}
             </VariantRow>
           </Field>
 
-          {weaponSystem === 'unified' ? (
-            <>
-              <Field label="REGION">
-                <VariantRow>{(['eu','ch'] as const).map((mode) => <VariantButton key={mode} active={weaponRegion === mode} onClick={() => setUnifiedRegion(mode)}>{mode.toUpperCase()}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="WEAPON">
-                <VariantRow>{unifiedWeapons.map(([name]) => <VariantButton key={name} active={weapon === name} onClick={() => setWeapon(name)}>{name}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="DEGREE">
-                <VariantRow>{Array.from({ length: 11 }, (_, i) => i + 1).map((n) => <VariantButton key={n} active={degree === n} onClick={() => setDegreeSafe(n)}>D{n}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="SEAL / TYPE">
-                <VariantRow>{unifiedSealOptions.map(([label, value]) => <VariantButton key={value} active={seal === value} onClick={() => setSeal(value)}>{label}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="PLUS">
-                <VariantRow>{[...Array.from({ length: 12 }, (_, i) => i + 1), 255].map((n) => <VariantButton key={n} active={unifiedPlus === n} onClick={() => setUnifiedPlus(n)}>+{n}</VariantButton>)}</VariantRow>
-              </Field>
-              <CodeResult value={unifiedCode} copied={copied === 'weapon'} onCopy={() => copy('weapon', unifiedCode)} />
-            </>
-          ) : (
-            <>
-              <Field label="REGION">
-                <VariantRow>{(['eu','ch'] as const).map((mode) => <VariantButton key={mode} active={weaponRegion === mode} onClick={() => { setWeaponRegion(mode); setEgyWeapon(mode === 'eu' ? '!OneHand' : '!Sword') }}>{mode.toUpperCase()}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="WEAPON">
-                <VariantRow>{egyWeapons.map((name) => <VariantButton key={name} active={egyWeapon === name} onClick={() => setEgyWeapon(name)}>{name.replace(/^!/, '')}</VariantButton>)}</VariantRow>
-              </Field>
-              <Field label="PLUS">
-                <VariantRow>{Array.from({ length: 11 }, (_, n) => n).map((n) => <VariantButton key={n} active={egyPlus === n} onClick={() => setEgyPlus(n)}>{n === 0 ? 'BASE' : `+${n}`}</VariantButton>)}</VariantRow>
-              </Field>
-              <CodeResult value={egyCode} copied={copied === 'egy'} onCopy={() => copy('egy', egyCode)} />
-            </>
-          )}
+          <Field label="REGION">
+            <VariantRow>
+              {(['eu','ch'] as const).map((mode) => (
+                <VariantButton
+                  key={mode}
+                  active={weaponRegion === mode}
+                  onClick={() => setWeaponRegionSafe(mode)}
+                >
+                  {mode.toUpperCase()}
+                </VariantButton>
+              ))}
+            </VariantRow>
+          </Field>
+
+          <Field label="WEAPON">
+            <VariantRow>
+              {availableWeapons.map((command) => (
+                <VariantButton
+                  key={command}
+                  active={weapon === command}
+                  onClick={() => setWeapon(command)}
+                >
+                  {command.replace(/^!/, '')}
+                </VariantButton>
+              ))}
+            </VariantRow>
+          </Field>
+
+          <Field label="PLUS">
+            <VariantRow>
+              {Array.from({ length: 11 }, (_, n) => n).map((n) => (
+                <VariantButton
+                  key={n}
+                  active={weaponPlus === n}
+                  onClick={() => setWeaponPlus(n)}
+                >
+                  {n === 0 ? 'BASE' : `+${n}`}
+                </VariantButton>
+              ))}
+            </VariantRow>
+          </Field>
+
+          <CodeResult
+            value={weaponCode}
+            copied={copied === 'weapon'}
+            onCopy={() => copy('weapon', weaponCode)}
+          />
         </GeneratorCard>
       </div>
     </div>

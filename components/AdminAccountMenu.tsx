@@ -14,11 +14,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export default function AdminAccountMenu({
-  email,
   displayName,
   isAdmin,
 }: {
-  email: string
   displayName: string
   isAdmin: boolean
 }) {
@@ -303,9 +301,7 @@ export default function AdminAccountMenu({
             )}
 
             <div className="account-drawer-note">
-              {email
-                ? 'Your login email is managed by Supabase and is not editable here.'
-                : 'Account authentication is managed securely by Supabase.'}
+              Authentication is managed securely by Supabase.
             </div>
           </aside>
         </>

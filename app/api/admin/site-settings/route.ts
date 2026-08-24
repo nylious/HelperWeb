@@ -1,35 +1,49 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
-async function getAdminUser() {
+async function getAdminClient() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
   if (!user) return null
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
-  return profile?.role === 'admin' ? user : null
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  return profile?.role === 'admin' ? supabase : null
 }
 
 export async function GET() {
   try {
-    const user = await getAdminUser()
-    if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
-    const admin = createAdminClient()
-    const { data, error } = await admin.from('site_settings').select('*').eq('id', 1).maybeSingle()
+    const supabase = await getAdminClient()
+    if (!supabase) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
+
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('id', 1)
+      .maybeSingle()
+
     if (error) throw error
+
     return NextResponse.json({ ok: true, settings: data })
   } catch (error) {
-    return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : 'Could not load settings.' }, { status: 500 })
+    return NextResponse.json({
+      ok: false,
+      error: error instanceof Error ? error.message : 'Could not load settings.',
+    }, { status: 500 })
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const user = await getAdminUser()
-    if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
+    const supabase = await getAdminClient()
+    if (!supabase) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
 
     const payload = await request.json()
-    const admin = createAdminClient()
     const allowed = {
       logo_url: String(payload.logo_url ?? '').trim(),
       hero_overline: String(payload.hero_overline ?? '').trim(),
@@ -44,10 +58,19 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     }
 
-    const { data, error } = await admin.from('site_settings').upsert({ id: 1, ...allowed }, { onConflict: 'id' }).select('*').single()
+    const { data, error } = await supabase
+      .from('site_settings')
+      .upsert({ id: 1, ...allowed }, { onConflict: 'id' })
+      .select('*')
+      .single()
+
     if (error) throw error
+
     return NextResponse.json({ ok: true, settings: data })
   } catch (error) {
-    return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : 'Could not save settings.' }, { status: 500 })
+    return NextResponse.json({
+      ok: false,
+      error: error instanceof Error ? error.message : 'Could not save settings.',
+    }, { status: 500 })
   }
 }

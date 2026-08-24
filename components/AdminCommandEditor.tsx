@@ -296,6 +296,31 @@ export default function AdminCommandEditor({
         </button>
       </div>
 
+      <div className="editor-shortcuts" aria-label="Command sections">
+        {local.map((section) => {
+          const count = section.categories.reduce(
+            (total, category) => total + category.entries.length,
+            0,
+          )
+
+          return (
+            <button
+              key={section.id}
+              className={`editor-shortcut ${section.slug === currentSection?.slug ? 'active' : ''}`}
+              onClick={() => {
+                setSectionSlug(section.slug)
+                setCategoryId(section.categories[0]?.id ?? '')
+                setEntryId(section.categories[0]?.entries[0]?.id ?? '')
+                setSearch('')
+              }}
+            >
+              <span>{section.name}</span>
+              <small>{count}</small>
+            </button>
+          )
+        })}
+      </div>
+
       <div className="editor-layout">
         <aside className="editor-sidebar">
           <div className="editor-sidebar-block">

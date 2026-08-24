@@ -217,6 +217,11 @@ export default function SettingsPage() {
 
         {status && <div className="settings-status success global-settings-status">{status}</div>}
         {error && <div className="settings-status error global-settings-status">{error}</div>}
+
+        <div className="settings-footer-actions">
+          <Link href="/admin" className="ghost-btn"><ArrowLeft size={15} /> Back to Admin Panel</Link>
+          <Link href="/" className="ghost-btn">Open public helper</Link>
+        </div>
       </div>
     </div>
   )

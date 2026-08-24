@@ -11,7 +11,6 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  let email = ''
   let displayName = ''
   let isAdmin = false
 
@@ -19,7 +18,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      email = user.email ?? ''
       const { data: profile } = await supabase.from('profiles').select('role,display_name').eq('id', user.id).maybeSingle()
       isAdmin = profile?.role === 'admin'
       displayName = (profile?.display_name ?? '').trim()
@@ -40,7 +38,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <div className="brand-subtitle">Commands / Codes GM Helper</div>
               </div>
             </Link>
-            <AdminAccountMenu email={email} displayName={displayName} isAdmin={isAdmin} />
+            <AdminAccountMenu displayName={displayName} isAdmin={isAdmin} />
           </div>
         </header>
         <main>{children}</main>

@@ -117,7 +117,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` is server-only and is used for protected admin operations such as catalog sync, profile updates and logo uploads.
+`SUPABASE_SERVICE_ROLE_KEY` is server-only and is required only by the protected catalog sync route. Profile edits and homepage logo uploads use the authenticated admin session.
 
 ---
 
@@ -280,3 +280,10 @@ This repository is the web successor to the Damanhour City desktop GM Helper. Th
 Built for fast GM workflows.
 
 </div>
+
+
+## V3 Notes
+- Homepage logo uploads use the authenticated admin session and Supabase Storage policies; logo editing no longer depends on the service-role key.
+- `SUPABASE_SERVICE_ROLE_KEY` is only required for the catalog sync route.
+- Admin command sections now have shortcut cards above the editor search.
+- Settings has explicit back/open-helper controls.
