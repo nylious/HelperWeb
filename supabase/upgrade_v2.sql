@@ -33,3 +33,14 @@ begin
   alter publication supabase_realtime add table public.site_settings;
 exception when duplicate_object then null;
 end $$;
+
+-- Account editor: allow an authenticated admin to update only their own profile row.
+drop policy if exists profiles_self_update on public.profiles;
+create policy profiles_self_update
+on public.profiles
+for update
+to authenticated
+using (id = auth.uid() and public.is_admin())
+with check (id = auth.uid() and public.is_admin());
+
+grant select, update on public.profiles to authenticated;

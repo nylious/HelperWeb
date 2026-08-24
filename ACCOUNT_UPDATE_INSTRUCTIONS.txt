@@ -1,0 +1,21 @@
+ACCOUNT MENU / PROFILE FIX
+
+What changed:
+- Removed the editable Email field from the Account drawer.
+- Account button now opens a compact slide-down account menu.
+- Account menu has exactly:
+  1. Admin Panel
+  2. Account
+  3. Sign out
+- Account opens a compact editor for Display Name and Password only.
+- Saving Display Name no longer requires SUPABASE_SERVICE_ROLE_KEY.
+- Password changes use the authenticated Supabase session.
+- Admin name appears beside "Admin" after saving.
+
+IMPORTANT FOR AN EXISTING SUPABASE PROJECT
+Run this once:
+  supabase/account_update.sql
+
+You do NOT need to recreate or seed the database again.
+
+Then replace the whole project on GitHub with this ZIP and let Vercel redeploy.

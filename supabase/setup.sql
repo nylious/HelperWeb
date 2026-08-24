@@ -331,3 +331,15 @@ insert into public.entries (id,category_id,name,code,description,uses_amount,var
 insert into public.entries (id,category_id,name,code,description,uses_amount,variants,levels,sort_order) values ('09ba723e-fcc8-50dc-b2e2-64d48b73b971','0b128fb9-7a48-5d4c-9e6c-89ae6f744210','Roc - HP','/loadmonster MOB_RM_ROC','HP كتير جدًا.',true,'{}'::jsonb,'[]'::jsonb,0) on conflict (id) do update set name=excluded.name,code=excluded.code,description=excluded.description,uses_amount=excluded.uses_amount,variants=excluded.variants,levels=excluded.levels,sort_order=excluded.sort_order;
 insert into public.entries (id,category_id,name,code,description,uses_amount,variants,levels,sort_order) values ('3babd90b-9e96-5ae1-9fbf-b4b74876a8e4','0b128fb9-7a48-5d4c-9e6c-89ae6f744210','Bone Roc','/loadmonster MOB_RM_BONEROC','Death Bone Roc.',true,'{}'::jsonb,'[]'::jsonb,0) on conflict (id) do update set name=excluded.name,code=excluded.code,description=excluded.description,uses_amount=excluded.uses_amount,variants=excluded.variants,levels=excluded.levels,sort_order=excluded.sort_order;
 commit;
+
+
+-- Allow an authenticated admin to update only their own display_name.
+drop policy if exists profiles_self_update on public.profiles;
+create policy profiles_self_update
+on public.profiles
+for update
+to authenticated
+using (id = auth.uid() and public.is_admin())
+with check (id = auth.uid() and public.is_admin());
+
+grant select, update on public.profiles to authenticated;
