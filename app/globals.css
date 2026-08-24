@@ -2989,3 +2989,26 @@ body {
     padding: 20px;
   }
 }
+
+/* V8 PUBLIC BROWSER OVERLAP FIX
+   The search toolbar was sticky inside the browser shell, causing the first
+   category/entry rows to render underneath it while scrolling. Keep it in
+   normal document flow so the three-column browser never overlaps itself. */
+.browser-toolbar {
+  position: relative !important;
+  top: auto !important;
+  z-index: 1 !important;
+}
+
+.browser-shell {
+  overflow: hidden;
+}
+
+.browser {
+  position: relative;
+}
+
+.browser-col,
+.detail {
+  min-width: 0;
+}
