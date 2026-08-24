@@ -2514,4 +2514,67 @@ body {
   border-color:rgba(216,175,78,.26);
   background:rgba(216,175,78,.035);
 }
-\n\n/* ===== V3 UX refinement ===== */\n.editor-shortcuts {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 8px;\n  margin: 0 0 12px;\n}\n.editor-shortcut {\n  min-height: 50px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 9px;\n  padding: 0 13px;\n  border: 1px solid rgba(216,175,78,.14);\n  border-radius: 11px;\n  color: #b9ae9a;\n  background: linear-gradient(180deg,#100e0b,#0b0907);\n  cursor: pointer;\n  text-align: left;\n  font-size: 10px;\n  font-weight: 800;\n  transition: .18s ease;\n}\n.editor-shortcut span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n.editor-shortcut small { color: #6c6254; font-size: 9px; }\n.editor-shortcut:hover {\n  color: #f1e4cc;\n  border-color: rgba(216,175,78,.32);\n  transform: translateY(-1px);\n}\n.editor-shortcut.active {\n  color: #0b0906;\n  border-color: #d8af4e;\n  background: linear-gradient(135deg,#ebc764,#b88728);\n  box-shadow: 0 9px 22px rgba(216,175,78,.10);\n}\n.editor-shortcut.active small { color: rgba(11,9,6,.64); }\n\n.settings-footer-actions {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n  justify-content: space-between;\n  margin-top: 18px;\n  padding-top: 14px;\n  border-top: 1px solid rgba(216,175,78,.09);\n}\n.site-preview-column {\n  min-width: 0;\n}\n.site-copy-fields { min-width: 0; }\n.settings-card-wide { overflow: hidden; }\n\n@media (max-width: 900px) {\n  .editor-shortcuts { grid-template-columns: repeat(2, minmax(0,1fr)); }\n  .settings-footer-actions { align-items: stretch; flex-direction: column; }\n  .settings-footer-actions .ghost-btn { width: 100%; justify-content: center; }\n}\n@media (max-width: 520px) {\n  .editor-shortcuts { grid-template-columns: 1fr; }\n}\n
+
+
+/* ===== V3 UX refinement ===== */
+.editor-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.editor-shortcut {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid rgba(216,175,78,.14);
+  border-radius: 11px;
+  color: #b9ae9a;
+  background: linear-gradient(180deg,#100e0b,#0b0907);
+  cursor: pointer;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 800;
+  transition: .18s ease;
+}
+.editor-shortcut span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.editor-shortcut small { color: #6c6254; font-size: 9px; }
+.editor-shortcut:hover {
+  color: #f1e4cc;
+  border-color: rgba(216,175,78,.32);
+  transform: translateY(-1px);
+}
+.editor-shortcut.active {
+  color: #0b0906;
+  border-color: #d8af4e;
+  background: linear-gradient(135deg,#ebc764,#b88728);
+  box-shadow: 0 9px 22px rgba(216,175,78,.10);
+}
+.editor-shortcut.active small { color: rgba(11,9,6,.64); }
+
+.settings-footer-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(216,175,78,.09);
+}
+.site-preview-column {
+  min-width: 0;
+}
+.site-copy-fields { min-width: 0; }
+.settings-card-wide { overflow: hidden; }
+
+@media (max-width: 900px) {
+  .editor-shortcuts { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .settings-footer-actions { align-items: stretch; flex-direction: column; }
+  .settings-footer-actions .ghost-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 520px) {
+  .editor-shortcuts { grid-template-columns: 1fr; }
+}
