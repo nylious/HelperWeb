@@ -59,13 +59,9 @@ export async function POST(request: Request) {
       })
 
     if (uploadError) {
-      const message = uploadError.message || 'Storage upload failed.'
-      if (/bucket|row-level|policy|permission/i.test(message)) {
-        throw new Error(
-          'Logo storage is not configured for admin uploads. Run supabase/upgrade_v4.sql once, then retry.'
-        )
-      }
-      throw uploadError
+      throw new Error(
+        `Storage upload failed: ${uploadError.message}`
+      )
     }
 
     const { data: publicUrl } = supabase.storage

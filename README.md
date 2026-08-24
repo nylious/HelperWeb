@@ -287,3 +287,7 @@ Built for fast GM workflows.
 - `SUPABASE_SERVICE_ROLE_KEY` is only required for the catalog sync route.
 - Admin command sections now have shortcut cards above the editor search.
 - Settings has explicit back/open-helper controls.
+
+
+## V5 Logo Upload Fix
+Run `supabase/upgrade_v5.sql` once to fix Storage RLS for logo uploads.
