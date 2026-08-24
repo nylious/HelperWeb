@@ -62,7 +62,6 @@ create trigger entries_updated_at before update on public.entries for each row e
 
 
 
--- Create a profile row automatically whenever a new Auth user is created.
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -83,6 +82,8 @@ create trigger on_auth_user_created
 after insert on auth.users
 for each row
 execute procedure public.handle_new_user();
+
+revoke all on function public.handle_new_user() from public;
 
 create or replace function public.is_admin()
 returns boolean
@@ -131,5 +132,3 @@ begin
   alter publication supabase_realtime add table public.entries;
 exception when duplicate_object then null;
 end $$;
-
-revoke all on function public.handle_new_user() from public;

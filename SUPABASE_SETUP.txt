@@ -1,0 +1,31 @@
+SUPABASE — ONE TIME SETUP
+
+1. Vercel environment variables:
+   NEXT_PUBLIC_SUPABASE_URL
+   NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+2. Supabase -> SQL Editor -> New query.
+3. Open supabase/setup.sql from this project.
+4. Paste ALL of it and Run.
+   It creates:
+   - sections
+   - categories
+   - entries
+   - profiles
+   - RLS
+   - admin check
+   - automatic profiles for new auth users
+   - seed data from the real catalog bundled with this project
+
+5. Create your Auth user in:
+   Authentication -> Users
+
+6. Run:
+   INSERT INTO public.profiles (id, role)
+   SELECT id, 'admin'
+   FROM auth.users
+   WHERE email = 'YOUR_EMAIL'
+   ON CONFLICT (id)
+   DO UPDATE SET role = 'admin';
+
+After that, /admin shows the real catalog and CRUD uses the live database.
