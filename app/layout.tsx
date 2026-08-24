@@ -4,7 +4,8 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Damanhour City GM Helper',
-  description: 'Damanhour City Commands / Codes GM Helper',
+  description: 'Damanhour City Commands / Codes GM Helper — live GM knowledge base.',
+  icons: { icon: '/favicon.svg' },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
