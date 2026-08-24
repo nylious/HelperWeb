@@ -27,8 +27,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Choose an image file.' }, { status: 400 })
     }
 
-    if (!file.type.startsWith('image/')) {
-      return NextResponse.json({ ok: false, error: 'Logo must be an image.' }, { status: 400 })
+    const allowedTypes = new Set([
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/webp',
+    ])
+
+    if (!allowedTypes.has(file.type.toLowerCase())) {
+      return NextResponse.json({ ok: false, error: 'Only PNG, JPG, JPEG and WebP logos are supported.' }, { status: 400 })
     }
 
     if (file.size > 5 * 1024 * 1024) {
@@ -51,7 +58,15 @@ export async function POST(request: Request) {
         cacheControl: '3600',
       })
 
-    if (uploadError) throw uploadError
+    if (uploadError) {
+      const message = uploadError.message || 'Storage upload failed.'
+      if (/bucket|row-level|policy|permission/i.test(message)) {
+        throw new Error(
+          'Logo storage is not configured for admin uploads. Run supabase/upgrade_v4.sql once, then retry.'
+        )
+      }
+      throw uploadError
+    }
 
     const { data: publicUrl } = supabase.storage
       .from('site-assets')

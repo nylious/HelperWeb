@@ -153,8 +153,9 @@ export default function SettingsPage() {
                 <label className="upload-logo-btn">
                   <Upload size={15} />
                   {uploading ? 'Uploading…' : 'Upload new logo'}
-                  <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo} hidden />
+                  <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" onChange={uploadLogo} hidden />
                 </label>
+                <div className="upload-help">PNG, JPG, JPEG or WebP · maximum 5 MB</div>
                 <label className="settings-input-block">
                   <span>LOGO URL</span>
                   <input value={form.logo_url} onChange={(e) => patch('logo_url', e.target.value)} placeholder="/brand-mark.svg or Supabase public URL" />
