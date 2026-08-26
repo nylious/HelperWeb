@@ -57,6 +57,7 @@ export async function POST(request: Request) {
     const payload = await request.json()
     const allowed = {
       logo_url: String(payload.logo_url ?? '').trim(),
+      header_icon_url: String(payload.header_icon_url ?? '').trim(),
       hero_overline: String(payload.hero_overline ?? '').trim(),
       hero_title_line1: String(payload.hero_title_line1 ?? '').trim(),
       hero_title_line2: String(payload.hero_title_line2 ?? '').trim(),

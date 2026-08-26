@@ -29,13 +29,19 @@ export async function POST(request: Request) {
 
     const allowedTypes = new Set([
       'image/png',
+      'image/svg+xml',
       'image/jpeg',
       'image/jpg',
       'image/webp',
     ])
 
+    const kind = String(form.get('kind') || 'logo')
+    if (kind !== 'logo' && kind !== 'header_icon') {
+      return NextResponse.json({ ok: false, error: 'Invalid upload target.' }, { status: 400 })
+    }
+
     if (!allowedTypes.has(file.type.toLowerCase())) {
-      return NextResponse.json({ ok: false, error: 'Only PNG, JPG, JPEG and WebP logos are supported.' }, { status: 400 })
+      return NextResponse.json({ ok: false, error: 'Only PNG, SVG, JPG, JPEG and WebP images are supported.' }, { status: 400 })
     }
 
     if (file.size > 5 * 1024 * 1024) {
@@ -47,7 +53,8 @@ export async function POST(request: Request) {
         .toLowerCase()
         .replace(/[^a-z0-9]/g, '') || 'png'
 
-    const path = `brand/${user.id}/logo-${Date.now()}.${ext}`
+    const fileLabel = kind === 'header_icon' ? 'header-icon' : 'logo'
+    const path = `brand/${user.id}/${fileLabel}-${Date.now()}.${ext}`
     const bytes = await file.arrayBuffer()
 
     const { error: uploadError } = await supabase.storage
@@ -68,12 +75,13 @@ export async function POST(request: Request) {
       .from('site-assets')
       .getPublicUrl(path)
 
+    const settingsPatch = kind === 'header_icon'
+      ? { id: 1, header_icon_url: publicUrl.publicUrl }
+      : { id: 1, logo_url: publicUrl.publicUrl }
+
     const { error: settingsError } = await supabase
       .from('site_settings')
-      .upsert(
-        { id: 1, logo_url: publicUrl.publicUrl },
-        { onConflict: 'id' },
-      )
+      .upsert(settingsPatch, { onConflict: 'id' })
 
     if (settingsError) throw settingsError
 

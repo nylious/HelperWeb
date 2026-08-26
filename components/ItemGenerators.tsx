@@ -1,7 +1,14 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Check, Copy } from 'lucide-react'
+import {
+  ChoiceButton,
+  ChoiceRow,
+  ITEM_PLUS_LEVELS,
+  WEAPON_DEGREES,
+  WEAPON_PLUS_LEVELS,
+} from '@/components/ChoiceControls'
 
 const weaponEU = ['!OneHand', '!TwoHand', '!Axe', '!Dagger', '!Crossbow', '!Staff', '!Warlock', '!Cleric', '!Bard', '!EuShield'] as const
 const weaponCH = ['!Sword', '!Blade', '!Spear', '!Glaive', '!Bow', '!ChShield'] as const
@@ -102,25 +109,25 @@ export default function ItemGenerators() {
       <div className="generator-grid">
         <GeneratorCard title="ITEM GENERATOR" subtitle="Armor / set commands with the same template structure as the original Helper.">
           <Field label="ITEM SYSTEM">
-            <VariantRow>
+            <ChoiceRow>
               {(['normal', 'egy', 'nova'] as const).map((mode) => (
-                <VariantButton key={mode} active={itemMode === mode} onClick={() => setItemMode(mode)}>
+                <ChoiceButton key={mode} active={itemMode === mode} onClick={() => setItemMode(mode)}>
                   {mode === 'normal' ? 'Normal Items' : mode === 'egy' ? 'Normal Egy Items' : 'Nova Items'}
-                </VariantButton>
+                </ChoiceButton>
               ))}
-            </VariantRow>
+            </ChoiceRow>
           </Field>
           <Field label="REGION">
-            <VariantRow>{(['eu', 'ch'] as const).map((mode) => <VariantButton key={mode} active={region === mode} onClick={() => setRegion(mode)}>{mode.toUpperCase()}</VariantButton>)}</VariantRow>
+            <ChoiceRow>{(['eu', 'ch'] as const).map((mode) => <ChoiceButton key={mode} active={region === mode} onClick={() => setRegion(mode)}>{mode.toUpperCase()}</ChoiceButton>)}</ChoiceRow>
           </Field>
           <Field label="TYPE">
-            <VariantRow>{(['clothes', 'light', 'heavy'] as const).map((mode) => <VariantButton key={mode} active={type === mode} onClick={() => setType(mode)}>{mode === 'clothes' ? region === 'eu' ? 'Robe' : 'Garment' : mode === 'light' ? region === 'eu' ? 'Light Armor' : 'Protector' : region === 'eu' ? 'Heavy Armor' : 'Armor'}</VariantButton>)}</VariantRow>
+            <ChoiceRow>{(['clothes', 'light', 'heavy'] as const).map((mode) => <ChoiceButton key={mode} active={type === mode} onClick={() => setType(mode)}>{mode === 'clothes' ? region === 'eu' ? 'Robe' : 'Garment' : mode === 'light' ? region === 'eu' ? 'Light Armor' : 'Protector' : region === 'eu' ? 'Heavy Armor' : 'Armor'}</ChoiceButton>)}</ChoiceRow>
           </Field>
           <Field label="GENDER">
-            <VariantRow>{(['male', 'female'] as const).map((mode) => <VariantButton key={mode} active={gender === mode} onClick={() => setGender(mode)}>{mode === 'male' ? 'Male' : 'Female'}</VariantButton>)}</VariantRow>
+            <ChoiceRow>{(['male', 'female'] as const).map((mode) => <ChoiceButton key={mode} active={gender === mode} onClick={() => setGender(mode)}>{mode === 'male' ? 'Male' : 'Female'}</ChoiceButton>)}</ChoiceRow>
           </Field>
           <Field label="PLUS">
-            <VariantRow>{[0, 1, 3, 5, 7, 9].map((n) => <VariantButton key={n} active={plus === n} onClick={() => setPlus(n)}>{n === 0 ? 'BASE' : `+${n}`}</VariantButton>)}</VariantRow>
+            <ChoiceRow>{ITEM_PLUS_LEVELS.map((n) => <ChoiceButton key={n} active={plus === n} onClick={() => setPlus(n)}>{n === 0 ? 'BASE' : `+${n}`}</ChoiceButton>)}</ChoiceRow>
           </Field>
           <CodeResult value={itemCode} copied={copied === 'item'} onCopy={() => copy('item', itemCode)} />
         </GeneratorCard>
@@ -130,91 +137,91 @@ export default function ItemGenerators() {
           subtitle="Normal / Nova use the original degree + seal generator. Egy Normal keeps its separate chat-command system."
         >
           <Field label="WEAPON SYSTEM">
-            <VariantRow>
+            <ChoiceRow>
               {(['normal', 'nova', 'egy'] as const).map((mode) => (
-                <VariantButton
+                <ChoiceButton
                   key={mode}
                   active={weaponSystem === mode}
                   onClick={() => setWeaponSystemSafe(mode)}
                 >
                   {mode === 'normal' ? 'Normal Weapons' : mode === 'nova' ? 'Nova Weapons' : 'Egy Normal Weapons'}
-                </VariantButton>
+                </ChoiceButton>
               ))}
-            </VariantRow>
+            </ChoiceRow>
           </Field>
 
           <Field label="REGION">
-            <VariantRow>
+            <ChoiceRow>
               {(['eu', 'ch'] as const).map((mode) => (
-                <VariantButton
+                <ChoiceButton
                   key={mode}
                   active={weaponRegion === mode}
                   onClick={() => setWeaponRegionSafe(mode)}
                 >
                   {mode.toUpperCase()}
-                </VariantButton>
+                </ChoiceButton>
               ))}
-            </VariantRow>
+            </ChoiceRow>
           </Field>
 
           <Field label="WEAPON">
-            <VariantRow>
+            <ChoiceRow>
               {availableWeapons.map((command) => (
-                <VariantButton
+                <ChoiceButton
                   key={command}
                   active={weapon === command}
                   onClick={() => setWeapon(command)}
                 >
                   {command.replace(/^!/, '')}
-                </VariantButton>
+                </ChoiceButton>
               ))}
-            </VariantRow>
+            </ChoiceRow>
           </Field>
 
           {weaponSystem !== 'egy' && (
             <>
               <Field label="DEGREE">
-                <VariantRow className="degree-row">
-                  {Array.from({ length: 11 }, (_, index) => index + 1).map((degree) => (
-                    <VariantButton
+                <ChoiceRow className="degree-row">
+                  {WEAPON_DEGREES.map((degree) => (
+                    <ChoiceButton
                       key={degree}
                       active={weaponDegree === degree}
                       onClick={() => setDegreeSafe(degree)}
                     >
                       D{degree}
-                    </VariantButton>
+                    </ChoiceButton>
                   ))}
-                </VariantRow>
+                </ChoiceRow>
               </Field>
 
               <Field label="SEAL / TYPE">
-                <VariantRow>
+                <ChoiceRow>
                   {sealOptions.map((seal) => (
-                    <VariantButton
+                    <ChoiceButton
                       key={seal}
                       active={weaponSeal === seal}
                       onClick={() => setWeaponSeal(seal)}
                     >
                       {seal}
-                    </VariantButton>
+                    </ChoiceButton>
                   ))}
-                </VariantRow>
+                </ChoiceRow>
               </Field>
             </>
           )}
 
           <Field label="PLUS">
-            <VariantRow className="plus-row">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 255].map((n) => (
-                <VariantButton
+            <ChoiceRow className="plus-row">
+              {WEAPON_PLUS_LEVELS.map((n) => (
+                <ChoiceButton
                   key={n}
                   active={weaponPlus === n}
                   onClick={() => setWeaponPlus(n)}
                 >
                   +{n === 255 ? '255' : n}
-                </VariantButton>
+                </ChoiceButton>
               ))}
-            </VariantRow>
+            </ChoiceRow>
           </Field>
 
           <CodeResult
@@ -256,19 +263,11 @@ function getWeaponCodePart(command: string, region: WeaponRegion) {
   return parts[command] ?? ''
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return <div className="generator-field"><label>{label}</label>{children}</div>
 }
 
-function VariantRow({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`variant-row ${className}`}>{children}</div>
-}
-
-function VariantButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button type="button" className={`variant-btn ${active ? 'active' : ''}`} onClick={onClick}>{children}</button>
-}
-
-function GeneratorCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
+function GeneratorCard({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return <div className="generator-card"><div className="eyebrow">{title}</div><p className="generator-subtitle">{subtitle}</p>{children}</div>
 }
 

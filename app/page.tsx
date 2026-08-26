@@ -62,6 +62,7 @@ export default async function Home() {
             <div>
               <div className="stat"><span className="stat-label">Catalogued entries</span><span className="stat-value">{count || '—'}</span></div>
               <div className="stat"><span className="stat-label">Sections</span><span className="stat-value">{sections.length}</span></div>
+              <div className="stat"><span className="stat-label">Theme</span><span className="stat-value">Gold / Black</span></div>
             </div>
           </div>
         </div>

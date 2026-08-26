@@ -1,8 +1,8 @@
 import './globals.css'
-import { Command, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AdminAccountMenu from '@/components/AdminAccountMenu'
+import { getSiteSettings } from '@/lib/site-settings'
 
 export const metadata = {
   title: 'Damanhour City GM Helper',
@@ -11,6 +11,7 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const site = await getSiteSettings()
   let displayName = ''
   let isAdmin = false
 
@@ -32,7 +33,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="brand">
-              <div className="brand-mark"><Command size={18} /></div>
+              <div className="brand-mark"><img src={site.header_icon_url || '/brand-mark.svg'} alt="Damanhour City icon" /></div>
               <div>
                 <div className="brand-title">DAMANHOUR CITY</div>
                 <div className="brand-subtitle">Commands / Codes GM Helper</div>

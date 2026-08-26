@@ -300,3 +300,7 @@ Run `supabase/upgrade_v6.sql` once to fix Storage RLS for logo uploads.
 - Refined public Helper spacing and proportions to match the Admin dashboard's visual quality.
 
 Run `supabase/upgrade_v7.sql` once for the homepage CTA destination fields.
+
+
+## V9 — Editable Header Icon
+The public navigation icon can now be changed from Admin → Settings. Upload PNG, SVG, JPG/JPEG or WebP (5 MB max). Run `supabase/upgrade_v9.sql` once after deploying.

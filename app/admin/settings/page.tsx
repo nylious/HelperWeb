@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 
 type SiteForm = {
   logo_url: string
+  header_icon_url: string
   hero_overline: string
   hero_title_line1: string
   hero_title_line2: string
@@ -21,6 +22,7 @@ type SiteForm = {
 
 const initialForm: SiteForm = {
   logo_url: '/brand-mark.svg',
+  header_icon_url: '/brand-mark.svg',
   hero_overline: '',
   hero_title_line1: '',
   hero_title_line2: '',
@@ -38,6 +40,7 @@ export default function SettingsPage() {
   const [syncing, setSyncing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploadingHeaderIcon, setUploadingHeaderIcon] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<SiteForm>(initialForm)
@@ -82,30 +85,48 @@ export default function SettingsPage() {
     }
   }
 
-  async function uploadLogo(event: React.ChangeEvent<HTMLInputElement>) {
+  async function uploadImage(event: React.ChangeEvent<HTMLInputElement>, kind: 'logo' | 'header_icon') {
     const file = event.target.files?.[0]
     if (!file) return
 
-    setUploading(true)
+    const setBusy = kind === 'logo' ? setUploading : setUploadingHeaderIcon
+    setBusy(true)
     setStatus('')
     setError('')
+
     try {
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('kind', kind)
+
       const response = await fetch('/api/admin/site-settings/logo', {
         method: 'POST',
         body: formData,
       })
       const result = (await response.json()) as { ok?: boolean; url?: string; error?: string }
-      if (!response.ok || !result.ok || !result.url) throw new Error(result.error || 'Could not upload logo.')
-      setForm((current) => ({ ...current, logo_url: result.url! }))
-      setStatus('Logo uploaded successfully. Save home settings to keep it as the active logo.')
+      if (!response.ok || !result.ok || !result.url) throw new Error(result.error || 'Could not upload image.')
+
+      setForm((current) => ({
+        ...current,
+        ...(kind === 'logo' ? { logo_url: result.url! } : { header_icon_url: result.url! }),
+      }))
+      setStatus(kind === 'logo'
+        ? 'Homepage logo uploaded successfully.'
+        : 'Header icon uploaded successfully.')
     } catch (value) {
-      setError(value instanceof Error ? value.message : 'Could not upload logo.')
+      setError(value instanceof Error ? value.message : 'Could not upload image.')
     } finally {
-      setUploading(false)
+      setBusy(false)
       event.target.value = ''
     }
+  }
+
+  async function uploadLogo(event: React.ChangeEvent<HTMLInputElement>) {
+    await uploadImage(event, 'logo')
+  }
+
+  async function uploadHeaderIcon(event: React.ChangeEvent<HTMLInputElement>) {
+    await uploadImage(event, 'header_icon')
   }
 
   async function syncCatalog() {
@@ -164,6 +185,27 @@ export default function SettingsPage() {
                   <span>LOGO URL</span>
                   <input value={form.logo_url} onChange={(e) => patch('logo_url', e.target.value)} placeholder="/brand-mark.svg or Supabase public URL" />
                 </label>
+
+              <div className="header-icon-settings">
+                <div className="header-icon-preview-wrap">
+                  <div className="header-icon-preview">
+                    <img src={form.header_icon_url || '/brand-mark.svg'} alt="Current header icon" />
+                  </div>
+                  <strong>HEADER ICON</strong>
+                  <span>Top navigation icon</span>
+                </div>
+                <label className="upload-logo-btn">
+                  <Upload size={15} />
+                  {uploadingHeaderIcon ? 'Uploading…' : 'Upload header icon'}
+                  <input type="file" accept="image/png,image/svg+xml,image/jpeg,image/jpg" onChange={uploadHeaderIcon} hidden />
+                </label>
+                <div className="upload-help">PNG, SVG, JPG or JPEG · maximum 5 MB</div>
+                <label className="settings-input-block">
+                  <span>HEADER ICON URL</span>
+                  <input value={form.header_icon_url} onChange={(e) => patch('header_icon_url', e.target.value)} placeholder="/brand-mark.svg or Supabase public URL" />
+                </label>
+              </div>
+
               </div>
 
               <div className="site-copy-fields">
