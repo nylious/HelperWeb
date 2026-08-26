@@ -75,9 +75,19 @@ export async function POST(request: Request) {
       .from('site-assets')
       .getPublicUrl(path)
 
-    const settingsPatch = kind === 'header_icon'
-      ? { id: 1, header_icon_url: publicUrl.publicUrl }
-      : { id: 1, logo_url: publicUrl.publicUrl }
+    const settingsPatch: {
+      id: number
+      logo_url?: string
+      header_icon_url?: string
+    } = kind === 'header_icon'
+      ? {
+          id: 1,
+          header_icon_url: publicUrl.publicUrl,
+        }
+      : {
+          id: 1,
+          logo_url: publicUrl.publicUrl,
+        }
 
     const { error: settingsError } = await supabase
       .from('site_settings')
