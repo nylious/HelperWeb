@@ -74,11 +74,16 @@ export async function POST(request: Request) {
 
     const { data, error } = await supabase
       .from('site_settings')
-      .upsert({ id: 1, ...allowed }, { onConflict: 'id' })
+      .update({
+        ...allowed,
+      })
+      .eq('id', 1)
       .select('*')
       .single()
 
-    if (error) throw error
+    if (error) {
+      throw new Error(`Could not save settings: ${error.message}`)
+    }
 
     return NextResponse.json({ ok: true, settings: data })
   } catch (error) {

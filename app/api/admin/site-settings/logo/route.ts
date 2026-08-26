@@ -91,9 +91,18 @@ export async function POST(request: Request) {
 
     const { error: settingsError } = await supabase
       .from('site_settings')
-      .upsert(settingsPatch, { onConflict: 'id' })
+      .update(
+        kind === 'header_icon'
+          ? { header_icon_url: publicUrl.publicUrl }
+          : { logo_url: publicUrl.publicUrl }
+      )
+      .eq('id', 1)
 
-    if (settingsError) throw settingsError
+    if (settingsError) {
+      throw new Error(
+        `Could not save ${kind === 'header_icon' ? 'header icon' : 'logo'} URL: ${settingsError.message}`
+      )
+    }
 
     return NextResponse.json({ ok: true, url: publicUrl.publicUrl })
   } catch (error) {
