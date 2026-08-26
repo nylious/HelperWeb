@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 import './globals.css'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -33,7 +36,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="brand">
-              <div className="brand-mark"><img src={site.header_icon_url || '/brand-mark.svg'} alt="Damanhour City icon" /></div>
+              <div className="brand-mark">
+                <img
+                  src={`${site.header_icon_url || '/brand-mark.svg'}${site.updated_at ? `?v=${encodeURIComponent(site.updated_at)}` : ''}`}
+                  alt="Damanhour City icon"
+                />
+              </div>
               <div>
                 <div className="brand-title">DAMANHOUR CITY</div>
                 <div className="brand-subtitle">Commands / Codes GM Helper</div>

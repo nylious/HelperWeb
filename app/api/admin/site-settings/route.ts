@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 function normalizeHref(value: unknown) {
   const raw = String(value ?? '').trim()
@@ -12,7 +13,7 @@ function normalizeHref(value: unknown) {
   return '/'
 }
 
-async function getAdminClient() {
+async function getAdminUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -24,15 +25,17 @@ async function getAdminClient() {
     .eq('id', user.id)
     .maybeSingle()
 
-  return profile?.role === 'admin' ? supabase : null
+  return profile?.role === 'admin' ? user : null
 }
+
 
 export async function GET() {
   try {
-    const supabase = await getAdminClient()
-    if (!supabase) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
+    const user = await getAdminUser()
+    if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
 
-    const { data, error } = await supabase
+    const admin = createAdminClient()
+    const { data, error } = await admin
       .from('site_settings')
       .select('*')
       .eq('id', 1)
@@ -51,9 +54,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await getAdminClient()
-    if (!supabase) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
+    const user = await getAdminUser()
+    if (!user) return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 })
 
+    const admin = createAdminClient()
     const payload = await request.json()
     const allowed = {
       logo_url: String(payload.logo_url ?? '').trim(),
@@ -72,7 +76,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from('site_settings')
       .update({
         ...allowed,

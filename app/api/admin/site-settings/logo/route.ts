@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(request: Request) {
   try {
@@ -19,6 +20,8 @@ export async function POST(request: Request) {
     if (profile?.role !== 'admin') {
       return NextResponse.json({ ok: false, error: 'Admin access required.' }, { status: 403 })
     }
+
+    const admin = createAdminClient()
 
     const form = await request.formData()
     const file = form.get('file')
@@ -57,7 +60,7 @@ export async function POST(request: Request) {
     const path = `brand/${user.id}/${fileLabel}-${Date.now()}.${ext}`
     const bytes = await file.arrayBuffer()
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await admin.storage
       .from('site-assets')
       .upload(path, bytes, {
         contentType: file.type,
@@ -71,7 +74,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { data: publicUrl } = supabase.storage
+    const { data: publicUrl } = admin.storage
       .from('site-assets')
       .getPublicUrl(path)
 
@@ -89,7 +92,7 @@ export async function POST(request: Request) {
           logo_url: publicUrl.publicUrl,
         }
 
-    const { error: settingsError } = await supabase
+    const { error: settingsError } = await admin
       .from('site_settings')
       .update(
         kind === 'header_icon'

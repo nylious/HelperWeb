@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export type SiteSettings = {
   id: number
@@ -15,6 +16,7 @@ export type SiteSettings = {
   secondary_button_label: string
   primary_button_href: string
   secondary_button_href: string
+  updated_at?: string
 }
 
 export const defaultSiteSettings: SiteSettings = {
@@ -34,15 +36,36 @@ export const defaultSiteSettings: SiteSettings = {
   secondary_button_label: 'Browse Discord',
   primary_button_href: '/section/console',
   secondary_button_href: '/section/discord',
+  updated_at: '',
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
+  try {
+    const admin = createAdminClient()
+    const { data, error } = await admin
+      .from('site_settings')
+      .select(
+        'id,logo_url,header_icon_url,hero_overline,hero_title_line1,hero_title_line2,hero_title_line3,hero_description,live_title,live_description,primary_button_label,secondary_button_label,primary_button_href,secondary_button_href,updated_at',
+      )
+      .eq('id', 1)
+      .maybeSingle()
+
+    if (!error && data) {
+      return {
+        ...defaultSiteSettings,
+        ...(data as Partial<SiteSettings>),
+      }
+    }
+  } catch {
+    // Fall through to the authenticated/public server client.
+  }
+
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from('site_settings')
       .select(
-        'id,logo_url,header_icon_url,hero_overline,hero_title_line1,hero_title_line2,hero_title_line3,hero_description,live_title,live_description,primary_button_label,secondary_button_label,primary_button_href,secondary_button_href',
+        'id,logo_url,header_icon_url,hero_overline,hero_title_line1,hero_title_line2,hero_title_line3,hero_description,live_title,live_description,primary_button_label,secondary_button_label,primary_button_href,secondary_button_href,updated_at',
       )
       .eq('id', 1)
       .maybeSingle()
