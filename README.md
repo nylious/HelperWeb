@@ -304,3 +304,16 @@ Run `supabase/upgrade_v7.sql` once for the homepage CTA destination fields.
 
 ## V9 — Editable Header Icon
 The public navigation icon can now be changed from Admin → Settings. Upload PNG, SVG, JPG/JPEG or WebP (5 MB max). Run `supabase/upgrade_v9.sql` once after deploying.
+
+
+# V10 Change Log
+
+## Generator Choice Controls
+- Added shared `components/ChoiceControls.tsx` for generator selection buttons.
+- Centralized item plus levels as `0..10`.
+- Centralized weapon plus levels and weapon degrees.
+- Item Generator now displays every plus level in order:
+  `BASE, +1, +2, +3, +4, +5, +6, +7, +8, +9, +10`.
+- Weapon Generator uses the same shared choice row/button components while keeping its original Normal/Nova and Egy systems separate.
+- No catalog/database data was changed.
+
