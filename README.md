@@ -304,3 +304,30 @@ Run `supabase/upgrade_v7.sql` once for the homepage CTA destination fields.
 
 ## V9 — Editable Header Icon
 The public navigation icon can now be changed from Admin → Settings. Upload PNG, SVG, JPG/JPEG or WebP (5 MB max). Run `supabase/upgrade_v9.sql` once after deploying.
+
+# V10 Change Log
+
+## Generator Choice Controls
+- Added shared `components/ChoiceControls.tsx` for generator selection buttons.
+- Centralized item plus levels as `0..10`.
+- Centralized weapon plus levels and weapon degrees.
+- Item Generator now displays every plus level in order:
+  `BASE, +1, +2, +3, +4, +5, +6, +7, +8, +9, +10`.
+- Weapon Generator uses the same shared choice row/button components while keeping its original Normal/Nova and Egy systems separate.
+- No catalog/database data was changed.
+
+
+# V11 Change Log
+
+Fixed the shared homepage/settings persistence path.
+
+- Added one idempotent migration: `supabase/upgrade_v11.sql`
+- Guarantees every `site_settings` column used by the current app exists,
+  including `header_icon_url`, `primary_button_href`, and
+  `secondary_button_href`.
+- Refreshes the singleton row and admin write policy.
+- Homepage settings now update the existing `id = 1` row instead of using
+  `upsert`.
+- Logo/header-icon uploads update only their specific URL column and expose
+  the exact database error if Supabase rejects the write.
+- No command, item, or catalog data is changed.
