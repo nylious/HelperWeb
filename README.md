@@ -1,306 +1,174 @@
-# 🏙️ Damanhour City GM Helper
-
 <div align="center">
 
-**A modern Gold × Black command center for Damanhour City GMs.**
+<img src="./public/brand-mark.svg" width="88" height="88" alt="Damanhour City">
 
-Fast lookup • Live catalog • Console generators • Admin control • Supabase • Vercel
+DAMANHOUR CITY GM HELPER
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database%20%2B%20Auth-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000?logo=vercel&logoColor=white)](https://vercel.com/)
+Commands • Codes • Generators • One clean place.
+
+Fast lookup • Live catalog • Command generators • Private admin control • Gold × Black
+
+
+
+
+
 
 </div>
 
----
+✦ Everything your GM needs
 
-## ✨ What it does
+Damanhour City GM Helper is a clean, fast place for the GM team to find commands, generate codes, and work with the live command catalog without digging through old files or rebuilding the tool every time.
 
-Damanhour City GM Helper turns the old desktop helper workflow into a live web workspace.
+One helper. One catalog. Less searching.
 
-- ⚡ **Discord Commands** — categorized command lookup with copy-ready output.
-- 🎮 **In-game Commands** — organized command catalog.
-- 🧩 **Console Commands** — GM commands, EU/CH variants and unique spawners.
-- ⚔️ **Item / Weapon Generators** — built around the original Helper logic.
-- 🔐 **Admin Console** — edit live entries without rebuilding the public site.
-- 🖼️ **Homepage Controls** — change the logo and homepage copy from Admin → Settings.
-- 👤 **Admin Profile** — display name + password controls in a slide-over account panel.
-- ⏱️ **Security** — 15-minute inactivity timeout + optional Remember Me.
-- 🗄️ **Supabase** — database, authentication, role checks and live settings.
-- 🚀 **Vercel** — Git-driven deployment.
+⚡ What you can do
 
----
 
-## 🗂️ Sections
 
-```text
-Damanhour City GM Helper
+
+
+💬 Discord Commands
+
+Find commands by category and copy them instantly.
+
+🎮 In-game Commands
+
+Browse the in-game command catalog in one place.
+
+🖥️ Console Commands
+
+Normal commands, EU / CH tools and unique spawners.
+
+⚔️ Item Generators
+
+Generate item commands using the Helper's original formats.
+
+🗡️ Weapon Generators
+
+Normal, Nova and Egy weapon systems in one clean interface.
+
+🔎 Fast Search
+
+Search commands, codes and descriptions without digging through lists.
+
+🛡️ Private Admin
+
+Manage the live catalog from a protected admin area.
+
+🖼️ Homepage Control
+
+Change the logo, homepage text and button destinations from Settings.
+
+✨ The experience
+
+💬 Discord Commands
+
+Browse categories, pick a command, see its description and copy the ready-to-use code.
+
+🎮 In-game Commands
+
+Keep the in-game command catalog organized and easy to reach when you need it.
+
+🖥️ Console Commands
+
+Everything from normal GM commands to EU / CH commands and unique spawners stays organized in one place.
+
+⚔️ Item & Weapon Generators
+
+Choose what you need, set the available options, and get the command immediately.
+
+🔎 Search everything faster
+
+Search by command name, code or description instead of scrolling through huge lists.
+
+🛡️ Private Admin Control
+
+The public Helper is for everyone.
+
+The Admin area is for your team.
+
+From the private Admin workspace you can:
+
+Add • Edit • Delete • Hide • Restore • Organize
+
+You can also hide a whole section or a single command without deleting it permanently.
+
+That means you can keep internal or unfinished commands in the system while keeping them invisible to normal visitors.
+
+🖼️ Make the Helper yours
+
+The homepage is not locked to one design forever.
+
+From the Admin Settings you can change the main identity of the Helper:
+
+Logo
+Header icon
+Homepage headline
+Homepage description
+Live catalog text
+Primary button text + destination
+Secondary button text + destination
+
+So the next time you want to change the look or wording, you do it from the panel instead of rebuilding the whole site.
+
+🎨 Gold × Black
+
+Built around a dark, clean visual style with a warm gold accent.
+
+No noisy colors.
+No clutter.
+Just the information you actually need.
+
+📚 Main sections
+
+DAMANHOUR CITY GM HELPER
 │
-├── Discord Commands
-│   ├── Streaming / Nitro Commands
-│   ├── Silk - Gold - Package Commands
-│   ├── CHAR Commands
-│   ├── Quests Commands
-│   ├── Card Collection Commands
-│   └── Ban Commands
+├── 💬 Discord Commands
 │
-├── In-game Commands
-│   ├── Titles / Streaming Commands
-│   ├── Silk / Gift Commands
-│   ├── Character Commands
-│   ├── Inventory Commands
-│   └── Plus / FB Commands
+├── 🎮 In-game Commands
 │
-├── Item Codes
-│   └── Item + Weapon Generators
+├── 🧩 Item Codes
+│   ├── Item Generators
+│   └── Weapon Generators
 │
-└── Console Commands
+└── 🖥️ Console Commands
     ├── Normal Commands
     ├── Normal EU
     ├── Normal CH
     ├── Zealot Uniques
     ├── Temple Uniques
     └── Roc - Medusa
-```
 
----
+🔐 Built for the GM team
 
-## 🛠️ Stack
+The public side is made for speed.
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js + React + TypeScript |
-| Styling | Custom Gold × Black UI |
-| Icons | Lucide React |
-| Database | Supabase PostgreSQL |
-| Authentication | Supabase Auth |
-| Storage | Supabase Storage |
-| Hosting | Vercel |
-| Source | GitHub |
+The private side is made for control.
 
----
+Your catalog can stay organized, your commands can stay current, and hidden entries can remain available for the people who manage the project.
 
-## 🔐 Admin security
-
-Admin access is **role-based**.
-
-```text
-Supabase Auth user
-        ↓
-public.profiles
-        ↓
-role = admin
-        ↓
-/admin
-```
-
-The Admin workspace also includes:
-
-- **Remember Me** for browser persistence.
-- **15-minute inactivity timeout**.
-- Profile drawer with display name.
-- Password change from the account drawer.
-- Server-side protection through middleware.
-
-> Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser.
-
----
-
-## ⚙️ Environment variables
-
-Create these in Vercel:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-```
-
-`SUPABASE_SERVICE_ROLE_KEY` is server-only and is required only by the protected catalog sync route. Profile edits and homepage logo uploads use the authenticated admin session.
-
----
-
-## 🗄️ Supabase setup
-
-### Existing project
-
-If you already ran the original `setup.sql`, run:
-
-```text
-supabase/upgrade_v2.sql
-```
-
-This adds:
-
-- `profiles.display_name`
-- `site_settings`
-- public site asset storage bucket
-- realtime support for site settings
-
-### Fresh project
-
-For a new Supabase project, run:
-
-```text
-supabase/setup.sql
-```
-
-That file includes schema + policies + catalog seed.
-
----
-
-## 🖼️ Homepage settings
-
-From:
-
-```text
-Admin
-  → Settings
-  → Home Identity
-```
-
-You can change:
-
-- Logo
-- Overline
-- Hero title lines
-- Hero description
-- Live card title
-- Live card description
-- Primary button text
-- Secondary button text
-
-The logo can be uploaded directly to Supabase Storage.
-
----
-
-## 🧑‍💻 Local development
-
-```bash
-npm install
-npm run dev
-```
-
-Open:
-
-```text
-http://localhost:3000
-```
-
-Admin:
-
-```text
-http://localhost:3000/admin/login
-```
-
----
-
-## 🚀 Deploy to Vercel
-
-1. Push the repository to GitHub.
-2. Import the repository in Vercel.
-3. Set the three environment variables above.
-4. Deploy.
-5. Run the required Supabase SQL migration.
-6. Create your Admin user in Supabase Auth.
-7. Promote the user to `admin` in `public.profiles`.
-
-Example:
-
-```sql
-INSERT INTO public.profiles (id, role, display_name)
-SELECT id, 'admin', 'Damanhour Admin'
-FROM auth.users
-WHERE email = 'YOUR_EMAIL'
-ON CONFLICT (id)
-DO UPDATE SET
-  role = 'admin',
-  display_name = excluded.display_name;
-```
-
----
-
-## 🧭 Project map
-
-```text
-app/
-├── admin/
-│   ├── commands/
-│   ├── login/
-│   ├── settings/
-│   └── page.tsx
-├── api/
-│   └── admin/
-├── section/
-└── page.tsx
-
-components/
-├── AdminAccountMenu.tsx
-├── AdminCommandEditor.tsx
-├── AdminSessionGuard.tsx
-├── CommandBrowser.tsx
-└── ItemGenerators.tsx
-
-lib/
-├── data.ts
-├── site-settings.ts
-├── static-data.ts
-└── supabase/
-
-supabase/
-├── setup.sql
-├── schema.sql
-└── upgrade_v2.sql
-```
-
----
-
-## 📝 Design direction
-
-The UI intentionally avoids the typical blue/purple SaaS-template look.
-
-**Direction:**
-
-> **Gold × Black • premium • minimal • GM utility • dense but readable**
-
-The public helper and Admin console share the same visual language while keeping different information densities.
-
----
-
-## 📜 Notes
-
-This repository is the web successor to the Damanhour City desktop GM Helper. The command catalog remains grounded in the existing Helper source and verified catalog data; the database becomes the live source of truth once synced.
-
----
+🌐 Live Helper
 
 <div align="center">
 
-**Damanhour City • GM Utility**  
-Built for fast GM workflows.
+Open Damanhour City GM Helper
+
+<a href="https://helper-web-kappa.vercel.app/">
+<img src="https://img.shields.io/badge/OPEN%20HELPER-c99c34?style=for-the-badge&logo=googlechrome&logoColor=111111" alt="Open Helper">
+</a>
 
 </div>
 
+❤️ Made for Damanhour City
 
-## V3 Notes
-- Homepage logo uploads use the authenticated admin session and Supabase Storage policies; logo editing no longer depends on the service-role key.
-- `SUPABASE_SERVICE_ROLE_KEY` is only required for the catalog sync route.
-- Admin command sections now have shortcut cards above the editor search.
-- Settings has explicit back/open-helper controls.
+Built around the way the Damanhour City GM team actually uses commands and codes.
 
+Fast. Clean. Organized.
 
-## V6 Logo Upload Fix
-Run `supabase/upgrade_v6.sql` once to fix Storage RLS for logo uploads.
+<div align="center">
 
-## V7 Refinements
-- Restored the original Normal / Nova weapon generator system from the desktop Helper: degree + seal + plus.
-- Kept Egy Normal Weapons on its separate chat-command system.
-- Added editable homepage button destinations to Admin Settings.
-- Moved Helper Back + section shortcuts directly above the command search/generator area.
-- Refined public Helper spacing and proportions to match the Admin dashboard's visual quality.
+Damanhour City • GM Utility
 
-Run `supabase/upgrade_v7.sql` once for the homepage CTA destination fields.
+Commands / Codes GM Helper
 
-
-## V9 — Editable Header Icon
-The public navigation icon can now be changed from Admin → Settings. Upload PNG, SVG, JPG/JPEG or WebP (5 MB max). Run `supabase/upgrade_v9.sql` once after deploying.
+</div>
