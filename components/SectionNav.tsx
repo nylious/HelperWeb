@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 
-const sections = [
+const sectionLinks = [
   { slug: 'console', label: 'Console Commands' },
   { slug: 'discord', label: 'Discord Commands' },
   { slug: 'ingame', label: 'In-game Commands' },
@@ -18,7 +18,7 @@ export default function SectionNav({ active, sections: visibleSlugs }: { active?
         </Link>
 
         <div className="helper-shortcuts" aria-label="Helper sections">
-          {sections.filter((section) => !visibleSlugs || visibleSlugs.includes(section.slug)).map((section) => (
+          {sectionLinks.filter((section) => !visibleSlugs || visibleSlugs.includes(section.slug)).map((section) => (
             <Link
               key={section.slug}
               href={`/section/${section.slug}`}
