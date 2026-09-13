@@ -8,7 +8,7 @@ const sections = [
   { slug: 'items', label: 'Item Codes' },
 ]
 
-export default function SectionNav({ active }: { active?: string }) {
+export default function SectionNav({ active, sections: visibleSlugs }: { active?: string; sections?: string[] }) {
   return (
     <div className="helper-section-nav helper-section-nav-below-hero">
       <div className="helper-nav-row">
@@ -18,7 +18,7 @@ export default function SectionNav({ active }: { active?: string }) {
         </Link>
 
         <div className="helper-shortcuts" aria-label="Helper sections">
-          {sections.map((section) => (
+          {sections.filter((section) => !visibleSlugs || visibleSlugs.includes(section.slug)).map((section) => (
             <Link
               key={section.slug}
               href={`/section/${section.slug}`}

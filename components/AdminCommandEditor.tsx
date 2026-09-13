@@ -69,6 +69,7 @@ export default function AdminCommandEditor({
   const [status, setStatus] = useState('')
   const [statusKind, setStatusKind] = useState<'success' | 'error' | 'info'>('info')
   const [copied, setCopied] = useState(false)
+  const [visibilitySaving, setVisibilitySaving] = useState(false)
 
   const currentSection =
     local.find((section) => section.slug === sectionSlug) ?? local[0]
@@ -111,7 +112,7 @@ export default function AdminCommandEditor({
       const { data, error } = await supabase
         .from('sections')
         .select(
-          'id,name,slug,description,kind,sort_order,categories(id,name,slug,sort_order,entries(id,name,code,description,uses_amount,variants,levels,sort_order))',
+          'id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))',
         )
         .order('sort_order')
 
@@ -270,6 +271,84 @@ export default function AdminCommandEditor({
     window.setTimeout(() => setCopied(false), 1200)
   }
 
+
+  async function toggleSectionVisibility(section: Section) {
+    setVisibilitySaving(true)
+    setStatus('')
+    try {
+      const next = !section.is_visible
+      const { error } = await supabase
+        .from('sections')
+        .update({ is_visible: next })
+        .eq('id', section.id)
+
+      if (error) throw error
+
+      setLocal((current) =>
+        current.map((item) =>
+          item.id === section.id
+            ? { ...item, is_visible: next }
+            : item,
+        ),
+      )
+
+      setStatus(next ? 'Section is visible to visitors.' : 'Section is now hidden from visitors.')
+      setStatusKind('success')
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : 'Could not update section visibility.',
+      )
+      setStatusKind('error')
+    } finally {
+      setVisibilitySaving(false)
+    }
+  }
+
+  async function toggleEntryVisibility() {
+    if (!selectedEntry) return
+
+    setVisibilitySaving(true)
+    setStatus('')
+
+    try {
+      const next = !selectedEntry.is_visible
+      const { error } = await supabase
+        .from('entries')
+        .update({ is_visible: next })
+        .eq('id', selectedEntry.id)
+
+      if (error) throw error
+
+      setLocal((current) =>
+        current.map((section) => ({
+          ...section,
+          categories: section.categories.map((category) => ({
+            ...category,
+            entries: category.entries.map((entry) =>
+              entry.id === selectedEntry.id
+                ? { ...entry, is_visible: next }
+                : entry,
+            ),
+          })),
+        })),
+      )
+
+      setStatus(next ? 'Command is visible to visitors.' : 'Command is now hidden from visitors.')
+      setStatusKind('success')
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : 'Could not update command visibility.',
+      )
+      setStatusKind('error')
+    } finally {
+      setVisibilitySaving(false)
+    }
+  }
+
   return (
     <div className="editor-page">
       <div className="editor-header">
@@ -315,7 +394,7 @@ export default function AdminCommandEditor({
               }}
             >
               <span>{section.name}</span>
-              <small>{count}</small>
+              <small>{count}</small><span className="editor-visibility-badge">{section.is_visible ? "LIVE" : "HIDDEN"}</span>
             </button>
           )
         })}
@@ -327,23 +406,37 @@ export default function AdminCommandEditor({
             <div className="editor-sidebar-label">SECTIONS</div>
             <div className="editor-section-list">
               {local.map((section) => (
-                <button
+                <div
                   key={section.id}
-                  className={`editor-section-btn ${section.slug === currentSection?.slug ? 'active' : ''}`}
-                  onClick={() => {
-                    setSectionSlug(section.slug)
-                    setCategoryId(section.categories[0]?.id ?? '')
-                    setEntryId(section.categories[0]?.entries[0]?.id ?? '')
-                  }}
+                  className={`editor-section-row ${section.slug === currentSection?.slug ? 'active' : ''} ${section.is_visible ? '' : 'hidden'}`}
                 >
-                  <span>{section.name}</span>
-                  <small>
-                    {section.categories.reduce(
-                      (total, category) => total + category.entries.length,
-                      0,
-                    )}
-                  </small>
-                </button>
+                  <button
+                    className="editor-section-btn"
+                    onClick={() => {
+                      setSectionSlug(section.slug)
+                      setCategoryId(section.categories[0]?.id ?? '')
+                      setEntryId(section.categories[0]?.entries[0]?.id ?? '')
+                    }}
+                  >
+                    <span>{section.name}</span>
+                    <small>
+                      {section.categories.reduce(
+                        (total, category) => total + category.entries.length,
+                        0,
+                      )}
+                    </small>
+                  </button>
+                  <button
+                    type="button"
+                    className="editor-visibility-btn"
+                    title={section.is_visible ? 'Hide section from visitors' : 'Show section to visitors'}
+                    aria-label={section.is_visible ? `Hide ${section.name}` : `Show ${section.name}`}
+                    disabled={visibilitySaving}
+                    onClick={() => toggleSectionVisibility(section)}
+                  >
+                    {section.is_visible ? '●' : '○'}
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -406,7 +499,7 @@ export default function AdminCommandEditor({
                 {filteredEntries.map((entry) => (
                   <button
                     key={entry.id}
-                    className={`editor-entry-btn ${selectedEntry?.id === entry.id && !isNew ? 'active' : ''}`}
+                    className={`editor-entry-btn ${selectedEntry?.id === entry.id && !isNew ? 'active' : ''} ${entry.is_visible ? '' : 'hidden'}`}
                     onClick={() => selectEntry(entry)}
                   >
                     <span>
@@ -527,6 +620,23 @@ export default function AdminCommandEditor({
                   <small>Add an amount selector to the public command browser.</small>
                 </span>
               </label>
+
+              {!isNew && selectedEntry && (
+                <label className="editor-check editor-visibility-check">
+                  <input
+                    type="checkbox"
+                    checked={selectedEntry.is_visible}
+                    onChange={toggleEntryVisibility}
+                    disabled={visibilitySaving}
+                  />
+                  <span>
+                    <strong>Visible to visitors</strong>
+                    <small>
+                      Turn this off to hide this command from the public Helper without deleting it.
+                    </small>
+                  </span>
+                </label>
+              )}
 
               <div className="editor-actions">
                 <button

@@ -11,6 +11,7 @@ export interface Entry {
   variants: VariantMap
   levels: string[]
   sort_order: number
+  is_visible: boolean
 }
 
 export interface Category {
@@ -19,6 +20,7 @@ export interface Category {
   slug: string
   section_slug: SectionSlug
   sort_order: number
+  is_visible: boolean
   entries: Entry[]
 }
 
@@ -29,5 +31,6 @@ export interface Section {
   description: string
   kind: string
   sort_order: number
+  is_visible: boolean
   categories: Category[]
 }

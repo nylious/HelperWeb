@@ -7,7 +7,7 @@ export default async function AdminCommands({
   searchParams: Promise<{ section?: string; category?: string }>
 }) {
   const params = await searchParams
-  const sections = await getSections()
+  const sections = await getSections(true)
 
   return (
     <div className="admin-shell">
