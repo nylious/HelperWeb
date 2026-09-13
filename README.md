@@ -7,7 +7,14 @@ DAMANHOUR CITY GM HELPER
 Commands • Codes • Generators • One clean place.
 
 Fast lookup • Live catalog • Command generators • Private admin control • Gold × Black
+<div align="center">
 
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database%20%2B%20Auth-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000?logo=vercel&logoColor=white)](https://vercel.com/)
+
+</div>
 
 
 
