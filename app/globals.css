@@ -3110,47 +3110,13 @@ body {
   gap: 12px;
 }
 .language-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 5px 9px;
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 10px;
-  background: rgba(255,255,255,.035);
+  display:flex;align-items:center;gap:8px;min-height:36px;padding:5px 9px;
+  border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.035);
 }
-.language-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  color: #8e98a3;
-}
-.language-selector #google_translate_element {
-  min-width: 120px;
-}
-.language-selector .goog-te-gadget {
-  font-family: inherit !important;
-  font-size: 0 !important;
-}
-.language-selector .goog-te-gadget-simple {
-  border: 0 !important;
-  background: transparent !important;
-  padding: 0 !important;
-  font-size: 12px !important;
-  color: #e7edf2 !important;
-}
-.language-selector .goog-te-gadget-simple span {
-  color: #e7edf2 !important;
-}
-body .goog-te-banner-frame {
-  display: none !important;
-}
-body {
-  top: 0 !important;
-}
-.goog-tooltip,
-.goog-te-balloon-frame {
-  display: none !important;
-}
+.language-label {font-size:10px;font-weight:800;letter-spacing:.12em;color:#8e98a3}
+.language-switcher {display:flex;align-items:center;gap:2px;padding:2px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(0,0,0,.2)}
+.language-switcher button {border:0;background:transparent;color:#8e98a3;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:800;cursor:pointer;transition:.15s}
+.language-switcher button:hover {color:#fff;background:rgba(255,255,255,.05)}
+.language-switcher button.active {color:#111;background:var(--accent);box-shadow:0 1px 8px rgba(216,175,78,.18)}
 
 .visibility-toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(127,138,149,.25);background:rgba(255,255,255,.035);color:#aeb8c2;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s}.visibility-toggle:hover{background:rgba(255,255,255,.07);color:#fff}.visibility-toggle.is-visible{color:#8fd3a8}.visibility-toggle.is-hidden{color:#e0a6a6}.visibility-toggle.compact{padding:5px}.visibility-toggle small{font-size:10px;font-weight:500;opacity:.7;margin-left:2px}.visibility-spin{animation:visibility-spin .8s linear infinite}@keyframes visibility-spin{to{transform:rotate(360deg)}}

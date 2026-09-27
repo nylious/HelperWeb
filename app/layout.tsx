@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AdminAccountMenu from '@/components/AdminAccountMenu'
 import { getSiteSettings } from '@/lib/site-settings'
-import LanguageSelector from '@/components/LanguageSelector'
+import LanguageSelector, { LanguageProvider } from '@/components/LanguageSelector'
 
 export const metadata = {
   title: 'Damanhour City GM Helper',
@@ -34,6 +34,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body>
+        <LanguageProvider>
         <header className="site-header">
           <div className="header-inner">
             <Link href="/" className="brand">
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </header>
         <main>{children}</main>
         <footer className="site-footer">Damanhour City • GM Utility</footer>
+        </LanguageProvider>
       </body>
     </html>
   )

@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Copy, Search, Check, Sparkles } from 'lucide-react'
 import VisibilityControls from '@/components/VisibilityControls'
+import { useLanguage } from '@/components/LanguageSelector'
 import { createClient } from '@/lib/supabase/client'
 import { Category, Entry, Section } from '@/lib/types'
 
 export default function CommandBrowser({ section }: { section: Section }) {
   const supabase = useMemo(() => createClient(), [])
+  const { t, translateDescription, translateLabel } = useLanguage()
   const [categories, setCategories] = useState<Category[]>(section.categories ?? [])
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(categories[0] ?? null)
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(categories[0]?.entries?.[0] ?? null)
@@ -15,14 +17,6 @@ export default function CommandBrowser({ section }: { section: Section }) {
   const [variant, setVariant] = useState('')
   const [amount, setAmount] = useState(1)
   const [copied, setCopied] = useState(false)
-
-  // Re-run Google Translate after React swaps the selected entry.
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      ;(window as any).__retranslatePage?.()
-    }, 250)
-    return () => window.clearTimeout(timer)
-  }, [selectedEntry?.id, selectedEntry?.description, selectedCategory?.id])
 
   const displayCode = useMemo(() => {
     if (!selectedEntry) return ''
@@ -116,16 +110,16 @@ export default function CommandBrowser({ section }: { section: Section }) {
     <div className="browser-shell">
       <div className="browser-toolbar">
         <Search size={18} color="#7f8a95" />
-        <input className="search" placeholder="Search commands, codes or descriptions..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <input className="search" placeholder={t('searchPlaceholder')} value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       <div className="browser">
         <div className="browser-col">
-          <div className="browser-title" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>CATEGORIES</div>
+          <div className="browser-title" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>{t('categories')}</div>
           <div className="scroll">
             {categories.map((cat) => (
               <div key={cat.id} style={{display:'flex',alignItems:'center',gap:6}}>
                 <button className={`choice ${selectedCategory?.id === cat.id ? 'active' : ''}`} style={{flex:1}} onClick={() => { setSelectedCategory(cat); setSelectedEntry(cat.entries[0] ?? null); setSearch(''); setVariant('') }}>
-                  <span>{cat.name}</span><span style={{ marginLeft:'auto', opacity:.65 }}>{cat.entries.length}</span>
+                  <span>{translateLabel(cat.name)}</span><span style={{ marginLeft:'auto', opacity:.65 }}>{cat.entries.length}</span>
                 </button>
                 <VisibilityControls type="category" id={cat.id} initialVisible={cat.is_visible} compact />
               </div>
@@ -133,25 +127,25 @@ export default function CommandBrowser({ section }: { section: Section }) {
           </div>
         </div>
         <div className="browser-col">
-          <div className="browser-title">ENTRIES</div>
+          <div className="browser-title">{t('entries')}</div>
           <div className="scroll">
             {filteredEntries.map((entry) => (
               <button key={entry.id} className={`entry ${selectedEntry?.id === entry.id ? 'active' : ''}`} onClick={() => { setSelectedEntry(entry); setVariant(Object.keys(entry.variants ?? {})[0] ?? '') }}>
                 <span>{entry.name}</span>
               </button>
             ))}
-            {!filteredEntries.length && <div className="muted" style={{padding:12}}>No matching entries.</div>}
+            {!filteredEntries.length && <div className="muted" style={{padding:12}}>{t('noMatchingEntries')}</div>}
           </div>
         </div>
         <div className="detail">
-          <div className="detail-kicker">{section.name}</div>
-          <div className="detail-kicker" style={{marginTop:10}}>{selectedCategory?.name ?? 'Select a category'}</div>
-          <h1>{selectedEntry?.name ?? 'Select an entry'}</h1>
-          <p>{selectedEntry?.description || 'Choose an entry from the list to inspect its code.'}</p>
+          <div className="detail-kicker">{translateLabel(section.name)}</div>
+          <div className="detail-kicker" style={{marginTop:10}}>{selectedCategory ? translateLabel(selectedCategory.name) : t('selectCategory')}</div>
+          <h1>{selectedEntry?.name ?? t('selectEntry')}</h1>
+          <p>{selectedEntry ? translateDescription(selectedEntry.description) : t('chooseEntry')}</p>
 
           {selectedEntry && Object.keys(selectedEntry.variants ?? {}).length > 0 && (
             <>
-              <div className="detail-kicker" style={{marginTop:22}}>VARIANTS</div>
+              <div className="detail-kicker" style={{marginTop:22}}>{t('variants')}</div>
               <div className="variant-row">
                 {Object.keys(selectedEntry.variants).map((v) => (
                   <button key={v} className={`variant-btn ${variant === v ? 'active' : ''}`} onClick={() => setVariant(v)}>{v}</button>
@@ -162,22 +156,22 @@ export default function CommandBrowser({ section }: { section: Section }) {
 
           {selectedEntry?.uses_amount && (
             <>
-              <div className="detail-kicker" style={{marginTop:22}}>AMOUNT</div>
+              <div className="detail-kicker" style={{marginTop:22}}>{t('amount')}</div>
               <div className="amount-row">
                 {[1,3,5,10].map((n) => <button key={n} className={`amount-btn ${amount === n ? 'active' : ''}`} onClick={() => setAmount(n)}>{n}</button>)}
               </div>
             </>
           )}
 
-          <div className="detail-kicker" style={{marginTop:26}}>GENERATED CODE</div>
+          <div className="detail-kicker" style={{marginTop:26}}>{t('generatedCode')}</div>
           <div className="code-box">
             <div className="code-row">
               <span>{displayCode || '—'}</span>
-              <button className="copy-btn" onClick={copyCode}>{copied ? <><Check size={16}/> Copied</> : <><Copy size={16}/> Copy</>}</button>
+              <button className="copy-btn" onClick={copyCode}>{copied ? <><Check size={16}/> {t('copied')}</> : <><Copy size={16}/> {t('copy')}</>}</button>
             </div>
           </div>
 
-          {section.slug === 'console' && <div className="muted" style={{marginTop:14,display:'flex',gap:8,alignItems:'center'}}><Sparkles size={14}/> Live from the central command database.</div>}
+          {section.slug === 'console' && <div className="muted" style={{marginTop:14,display:'flex',gap:8,alignItems:'center'}}><Sparkles size={14}/>{t('liveDatabase')}</div>}
         </div>
       </div>
     </div>
