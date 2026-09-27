@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getSections } from '@/lib/data'
+import VisibilityControls from '@/components/VisibilityControls'
 
 const icons: Record<string, typeof Terminal> = {
   console: Swords,
@@ -84,6 +85,7 @@ export default async function AdminPage() {
                 >
                   <Icon size={17} />
                   {section.name}
+                  {!section.is_visible && <span style={{marginLeft:'auto',fontSize:10,opacity:.65}}>HIDDEN</span>}
                 </Link>
               )
             })}
@@ -214,10 +216,14 @@ export default async function AdminPage() {
                     <div className="dashboard-section-icon">
                       <Icon size={19} />
                     </div>
-                    <ArrowUpRight size={17} className="dashboard-card-arrow" />
+                    <div style={{display:'flex', gap:8, alignItems:'center'}}>
+                      <VisibilityControls type="section" id={section.id} initialVisible={section.is_visible} compact />
+                      <ArrowUpRight size={17} className="dashboard-card-arrow" />
+                    </div>
                   </div>
                   <div className="dashboard-section-card-body">
                     <div className="dashboard-section-title">{section.name}</div>
+                    <div style={{marginTop:8}}><VisibilityControls type="section" id={section.id} initialVisible={section.is_visible} /></div>
                     <div className="dashboard-section-count">{count}</div>
                     <div className="dashboard-section-meta">
                       {section.categories.length} categories

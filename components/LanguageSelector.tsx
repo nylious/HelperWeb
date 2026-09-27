@@ -33,8 +33,23 @@ export default function LanguageSelector() {
       window.googleTranslateElementInit()
     }
 
+    // Re-apply Google Translate after React updates dynamic content (commands/descriptions).
+    // Google Translate only processes the DOM that exists when it runs.
+    ;(window as any).__retranslatePage = () => {
+      const combo = document.querySelector<HTMLSelectElement>('.goog-te-combo')
+      if (!combo || !combo.value) return
+      const current = combo.value
+      combo.dispatchEvent(new Event('change', { bubbles: true }))
+      // Some Google Translate builds ignore a change to the same value.
+      window.setTimeout(() => {
+        if (combo.value !== current) combo.value = current
+        combo.dispatchEvent(new Event('change', { bubbles: true }))
+      }, 120)
+    }
+
     return () => {
       delete window.googleTranslateElementInit
+      delete (window as any).__retranslatePage
     }
   }, [])
 

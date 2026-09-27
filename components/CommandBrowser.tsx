@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Copy, Search, Check, Sparkles } from 'lucide-react'
+import VisibilityControls from '@/components/VisibilityControls'
 import { createClient } from '@/lib/supabase/client'
 import { Category, Entry, Section } from '@/lib/types'
 
@@ -14,6 +15,14 @@ export default function CommandBrowser({ section }: { section: Section }) {
   const [variant, setVariant] = useState('')
   const [amount, setAmount] = useState(1)
   const [copied, setCopied] = useState(false)
+
+  // Re-run Google Translate after React swaps the selected entry.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      ;(window as any).__retranslatePage?.()
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [selectedEntry?.id, selectedEntry?.description, selectedCategory?.id])
 
   const displayCode = useMemo(() => {
     if (!selectedEntry) return ''
@@ -111,12 +120,15 @@ export default function CommandBrowser({ section }: { section: Section }) {
       </div>
       <div className="browser">
         <div className="browser-col">
-          <div className="browser-title">CATEGORIES</div>
+          <div className="browser-title" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>CATEGORIES</div>
           <div className="scroll">
             {categories.map((cat) => (
-              <button key={cat.id} className={`choice ${selectedCategory?.id === cat.id ? 'active' : ''}`} onClick={() => { setSelectedCategory(cat); setSelectedEntry(cat.entries[0] ?? null); setSearch(''); setVariant('') }}>
-                <span>{cat.name}</span><span style={{ marginLeft:'auto', opacity:.65 }}>{cat.entries.length}</span>
-              </button>
+              <div key={cat.id} style={{display:'flex',alignItems:'center',gap:6}}>
+                <button className={`choice ${selectedCategory?.id === cat.id ? 'active' : ''}`} style={{flex:1}} onClick={() => { setSelectedCategory(cat); setSelectedEntry(cat.entries[0] ?? null); setSearch(''); setVariant('') }}>
+                  <span>{cat.name}</span><span style={{ marginLeft:'auto', opacity:.65 }}>{cat.entries.length}</span>
+                </button>
+                <VisibilityControls type="category" id={cat.id} initialVisible={cat.is_visible} compact />
+              </div>
             ))}
           </div>
         </div>
