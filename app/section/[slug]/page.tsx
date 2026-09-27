@@ -3,6 +3,7 @@ import { getSection, getSections } from '@/lib/data'
 import CommandBrowser from '@/components/CommandBrowser'
 import ItemGenerators from '@/components/ItemGenerators'
 import SectionNav from '@/components/SectionNav'
+import SectionPageHeader from '@/components/SectionPageHeader'
 
 export default async function SectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -13,11 +14,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
 
     return (
       <>
-        <div className="hero section-hero">
-          <div className="eyebrow">ITEM SYSTEMS</div>
-          <h1 className="section-page-title">Item Codes</h1>
-          <p>Generate the same item and weapon command formats used by the original GM Helper.</p>
-        </div>
+        <SectionPageHeader items />
         <SectionNav active="items" sections={(await getSections()).map((item) => item.slug)} />
         <ItemGenerators />
       </>
@@ -29,11 +26,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
-      <div className="hero section-hero">
-        <div className="eyebrow">{section.name}</div>
-        <h1 className="section-page-title">{section.name}</h1>
-        <p>{section.description}</p>
-      </div>
+      <SectionPageHeader section={section} />
       <SectionNav active={slug} sections={(await getSections()).map((item) => item.slug)} />
       <CommandBrowser section={section} />
     </>

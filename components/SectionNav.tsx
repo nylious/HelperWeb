@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageSelector'
 
 const sectionLinks = [
   { slug: 'console', label: 'Console Commands' },
@@ -9,12 +12,15 @@ const sectionLinks = [
 ]
 
 export default function SectionNav({ active, sections: visibleSlugs }: { active?: string; sections?: string[] }) {
+  const { language, translateLabel } = useLanguage()
+  const back = language === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'
+
   return (
     <div className="helper-section-nav helper-section-nav-below-hero">
       <div className="helper-nav-row">
         <Link href="/" className="helper-back-btn">
           <ArrowLeft size={15} />
-          Back to Home
+          {back}
         </Link>
 
         <div className="helper-shortcuts" aria-label="Helper sections">
@@ -24,7 +30,7 @@ export default function SectionNav({ active, sections: visibleSlugs }: { active?
               href={`/section/${section.slug}`}
               className={`helper-shortcut ${active === section.slug ? 'active' : ''}`}
             >
-              <span>{section.label}</span>
+              <span>{translateLabel(section.label)}</span>
               <ChevronRight size={13} />
             </Link>
           ))}

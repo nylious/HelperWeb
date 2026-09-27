@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState, type ReactNode } from 'react'
+import { useLanguage } from '@/components/LanguageSelector'
 import { Check, Copy } from 'lucide-react'
 import {
   ChoiceButton,
@@ -20,6 +21,18 @@ type ItemMode = 'normal' | 'egy' | 'nova'
 type Seal = 'Normal' | 'Star' | 'Moon' | 'Sun' | 'Nova'
 
 export default function ItemGenerators() {
+  const { language, translateLabel } = useLanguage()
+  const EXTRA_TR: Record<string, string> = {
+    'ITEM GENERATOR': 'ITEM GENERATOR', 'WEAPON GENERATOR': 'SİLAH GENERATOR',
+    'ITEM SYSTEM': 'ITEM SİSTEMİ', 'REGION': 'BÖLGE', 'TYPE': 'TÜR', 'GENDER': 'CİNSİYET',
+    'PLUS': 'PLUS', 'WEAPON SYSTEM': 'SİLAH SİSTEMİ', 'WEAPON': 'SİLAH', 'DEGREE': 'DERECE',
+    'SEAL / TYPE': 'SEAL / TÜR', 'GENERATED CODE': 'OLUŞTURULAN KOD',
+    'Normal Items': 'Normal Itemlar', 'Normal Egy Items': 'Normal Egy Itemları', 'Nova Items': 'Nova Itemları',
+    'Normal Weapons': 'Normal Silahlar', 'Nova Weapons': 'Nova Silahları', 'Egy Normal Weapons': 'Egy Normal Silahlar',
+    'Copied': 'Kopyalandı', 'Copy': 'Kopyala',
+  }
+  const tr = (value: string) => language === 'tr' ? (EXTRA_TR[value] ?? translateLabel(value)) : value
+
   const [itemMode, setItemMode] = useState<ItemMode>('normal')
   const [region, setRegion] = useState<'eu' | 'ch'>('eu')
   const [type, setType] = useState<'clothes' | 'light' | 'heavy'>('clothes')
@@ -101,42 +114,42 @@ export default function ItemGenerators() {
     <div className="browser-shell generators-page">
       <div className="generator-header">
         <div>
-          <div className="eyebrow">ITEM SYSTEMS</div>
-          <p>These generators mirror the command formats and weapon systems used by the original Helper.</p>
+          <div className="eyebrow">{language === 'tr' ? 'ITEM SİSTEMLERİ' : 'ITEM SYSTEMS'}</div>
+          <p>{language === 'tr' ? 'Bu generator araçları orijinal Helper tarafından kullanılan komut formatlarını ve silah sistemlerini kullanır.' : 'These generators mirror the command formats and weapon systems used by the original Helper.'}</p>
         </div>
       </div>
 
       <div className="generator-grid">
-        <GeneratorCard title="ITEM GENERATOR" subtitle="Armor / set commands with the same template structure as the original Helper.">
-          <Field label="ITEM SYSTEM">
+        <GeneratorCard title={tr('ITEM GENERATOR')} subtitle={language === 'tr' ? 'Orijinal Helper ile aynı template yapısına sahip Armor / set komutları.' : 'Armor / set commands with the same template structure as the original Helper.'}>
+          <Field label={tr('ITEM SYSTEM')}>
             <ChoiceRow>
               {(['normal', 'egy', 'nova'] as const).map((mode) => (
                 <ChoiceButton key={mode} active={itemMode === mode} onClick={() => setItemMode(mode)}>
-                  {mode === 'normal' ? 'Normal Items' : mode === 'egy' ? 'Normal Egy Items' : 'Nova Items'}
+                  {tr(mode === 'normal' ? 'Normal Items' : mode === 'egy' ? 'Normal Egy Items' : 'Nova Items')}
                 </ChoiceButton>
               ))}
             </ChoiceRow>
           </Field>
-          <Field label="REGION">
+          <Field label={tr('REGION')}>
             <ChoiceRow>{(['eu', 'ch'] as const).map((mode) => <ChoiceButton key={mode} active={region === mode} onClick={() => setRegion(mode)}>{mode.toUpperCase()}</ChoiceButton>)}</ChoiceRow>
           </Field>
-          <Field label="TYPE">
+          <Field label={tr('TYPE')}>
             <ChoiceRow>{(['clothes', 'light', 'heavy'] as const).map((mode) => <ChoiceButton key={mode} active={type === mode} onClick={() => setType(mode)}>{mode === 'clothes' ? region === 'eu' ? 'Robe' : 'Garment' : mode === 'light' ? region === 'eu' ? 'Light Armor' : 'Protector' : region === 'eu' ? 'Heavy Armor' : 'Armor'}</ChoiceButton>)}</ChoiceRow>
           </Field>
-          <Field label="GENDER">
+          <Field label={tr('GENDER')}>
             <ChoiceRow>{(['male', 'female'] as const).map((mode) => <ChoiceButton key={mode} active={gender === mode} onClick={() => setGender(mode)}>{mode === 'male' ? 'Male' : 'Female'}</ChoiceButton>)}</ChoiceRow>
           </Field>
-          <Field label="PLUS">
+          <Field label={tr('PLUS')}>
             <ChoiceRow>{ITEM_PLUS_LEVELS.map((n) => <ChoiceButton key={n} active={plus === n} onClick={() => setPlus(n)}>{n === 0 ? 'BASE' : `+${n}`}</ChoiceButton>)}</ChoiceRow>
           </Field>
           <CodeResult value={itemCode} copied={copied === 'item'} onCopy={() => copy('item', itemCode)} />
         </GeneratorCard>
 
         <GeneratorCard
-          title="WEAPON GENERATOR"
-          subtitle="Normal / Nova use the original degree + seal generator. Egy Normal keeps its separate chat-command system."
+          title={tr('WEAPON GENERATOR')}
+          subtitle={language === 'tr' ? 'Normal / Nova orijinal degree + seal generatorını kullanır. Egy Normal ayrı chat-command sistemini korur.' : 'Normal / Nova use the original degree + seal generator. Egy Normal keeps its separate chat-command system.'}
         >
-          <Field label="WEAPON SYSTEM">
+          <Field label={tr('WEAPON SYSTEM')}>
             <ChoiceRow>
               {(['normal', 'nova', 'egy'] as const).map((mode) => (
                 <ChoiceButton
@@ -144,13 +157,13 @@ export default function ItemGenerators() {
                   active={weaponSystem === mode}
                   onClick={() => setWeaponSystemSafe(mode)}
                 >
-                  {mode === 'normal' ? 'Normal Weapons' : mode === 'nova' ? 'Nova Weapons' : 'Egy Normal Weapons'}
+                  {tr(mode === 'normal' ? 'Normal Weapons' : mode === 'nova' ? 'Nova Weapons' : 'Egy Normal Weapons')}
                 </ChoiceButton>
               ))}
             </ChoiceRow>
           </Field>
 
-          <Field label="REGION">
+          <Field label={tr('REGION')}>
             <ChoiceRow>
               {(['eu', 'ch'] as const).map((mode) => (
                 <ChoiceButton
@@ -164,7 +177,7 @@ export default function ItemGenerators() {
             </ChoiceRow>
           </Field>
 
-          <Field label="WEAPON">
+          <Field label={tr('WEAPON')}>
             <ChoiceRow>
               {availableWeapons.map((command) => (
                 <ChoiceButton
@@ -180,7 +193,7 @@ export default function ItemGenerators() {
 
           {weaponSystem !== 'egy' && (
             <>
-              <Field label="DEGREE">
+              <Field label={tr('DEGREE')}>
                 <ChoiceRow className="degree-row">
                   {WEAPON_DEGREES.map((degree) => (
                     <ChoiceButton
@@ -194,7 +207,7 @@ export default function ItemGenerators() {
                 </ChoiceRow>
               </Field>
 
-              <Field label="SEAL / TYPE">
+              <Field label={tr('SEAL / TYPE')}>
                 <ChoiceRow>
                   {sealOptions.map((seal) => (
                     <ChoiceButton
@@ -210,7 +223,7 @@ export default function ItemGenerators() {
             </>
           )}
 
-          <Field label="PLUS">
+          <Field label={tr('PLUS')}>
             <ChoiceRow className="plus-row">
               {WEAPON_PLUS_LEVELS.map((n) => (
                 <ChoiceButton
@@ -272,5 +285,16 @@ function GeneratorCard({ title, subtitle, children }: { title: string; subtitle:
 }
 
 function CodeResult({ value, copied, onCopy }: { value: string; copied: boolean; onCopy: () => void }) {
-  return <div className="generator-code-result"><div className="detail-kicker">GENERATED CODE</div><div className="code-box"><div className="code-row"><span>{value}</span><button type="button" className="copy-btn" onClick={onCopy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy</>}</button></div></div></div>
+  const { language } = useLanguage()
+  const tr = (value: string) => {
+    if (language !== 'tr') return value
+    const translations: Record<string, string> = {
+      'GENERATED CODE': 'OLUŞTURULAN KOD',
+      'Copied': 'Kopyalandı',
+      'Copy': 'Kopyala',
+    }
+    return translations[value] ?? value
+  }
+
+  return <div className="generator-code-result"><div className="detail-kicker">{tr('GENERATED CODE')}</div><div className="code-box"><div className="code-row"><span>{value}</span><button type="button" className="copy-btn" onClick={onCopy}>{copied ? <><Check size={16} /> {tr('Copied')}</> : <><Copy size={16} /> {tr('Copy')}</>}</button></div></div></div>
 }
