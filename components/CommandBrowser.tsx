@@ -37,7 +37,7 @@ export default function CommandBrowser({ section }: { section: Section }) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, async () => {
         const { data } = await supabase
           .from('sections')
-          .select('id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))')
+          .select('id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,is_visible,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))')
           .eq('slug', section.slug)
           .single()
         if (data) {
@@ -46,6 +46,7 @@ export default function CommandBrowser({ section }: { section: Section }) {
             ...raw,
             is_visible: raw.is_visible !== false,
             categories: (raw.categories ?? [])
+              .filter((category) => category.is_visible !== false)
               .map((category) => ({
                 ...category,
                 entries: (category.entries ?? []).filter((entry) => entry.is_visible !== false),
@@ -53,6 +54,30 @@ export default function CommandBrowser({ section }: { section: Section }) {
               .filter((category) => category.entries.length > 0),
           }
 
+          setCategories(fresh.categories)
+          setSelectedCategory(fresh.categories[0] ?? null)
+          setSelectedEntry(fresh.categories[0]?.entries?.[0] ?? null)
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, async () => {
+        const { data } = await supabase
+          .from('sections')
+          .select('id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,is_visible,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))')
+          .eq('slug', section.slug)
+          .single()
+        if (data) {
+          const raw = data as unknown as Section
+          const fresh: Section = {
+            ...raw,
+            is_visible: raw.is_visible !== false,
+            categories: (raw.categories ?? [])
+              .filter((category) => category.is_visible !== false)
+              .map((category) => ({
+                ...category,
+                entries: (category.entries ?? []).filter((entry) => entry.is_visible !== false),
+              }))
+              .filter((category) => category.entries.length > 0),
+          }
           setCategories(fresh.categories)
           setSelectedCategory(fresh.categories[0] ?? null)
           setSelectedEntry(fresh.categories[0]?.entries?.[0] ?? null)

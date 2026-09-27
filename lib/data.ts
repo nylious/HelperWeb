@@ -15,7 +15,7 @@ const fallback: Section[] = (staticSections as unknown as Section[]).map((sectio
 }))
 
 const sectionSelect =
-  'id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))'
+  'id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,is_visible,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))'
 
 function hasUsableCatalog(data: unknown): data is Section[] {
   if (!Array.isArray(data) || data.length === 0) return false
@@ -45,6 +45,7 @@ export async function getSections(includeHidden = false): Promise<Section[]> {
       is_visible: section.is_visible !== false,
       categories: (section.categories ?? []).map((category) => ({
         ...category,
+        is_visible: category.is_visible !== false,
         entries: (category.entries ?? []).map((entry) => ({
           ...entry,
           is_visible: entry.is_visible !== false,
@@ -59,6 +60,7 @@ export async function getSections(includeHidden = false): Promise<Section[]> {
       .map((section) => ({
         ...section,
         categories: section.categories
+          .filter((category) => category.is_visible)
           .map((category) => ({
             ...category,
             entries: category.entries.filter((entry) => entry.is_visible),

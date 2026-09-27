@@ -13,7 +13,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { Entry, Section } from '@/lib/types'
+import { Category, Entry, Section } from '@/lib/types'
 
 type Draft = {
   name: string
@@ -112,7 +112,7 @@ export default function AdminCommandEditor({
       const { data, error } = await supabase
         .from('sections')
         .select(
-          'id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))',
+          'id,name,slug,description,kind,sort_order,is_visible,categories(id,name,slug,sort_order,is_visible,entries(id,name,code,description,uses_amount,variants,levels,sort_order,is_visible))',
         )
         .order('sort_order')
 
@@ -306,6 +306,37 @@ export default function AdminCommandEditor({
     }
   }
 
+  async function toggleCategoryVisibility(category: Category) {
+    setVisibilitySaving(true)
+    setStatus('')
+    try {
+      const next = !category.is_visible
+      const { error } = await supabase
+        .from('categories')
+        .update({ is_visible: next })
+        .eq('id', category.id)
+
+      if (error) throw error
+
+      setLocal((current) =>
+        current.map((section) => ({
+          ...section,
+          categories: section.categories.map((item) =>
+            item.id === category.id ? { ...item, is_visible: next } : item,
+          ),
+        })),
+      )
+
+      setStatus(next ? 'Category is visible to visitors.' : 'Category is now hidden from visitors.')
+      setStatusKind('success')
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Could not update category visibility.')
+      setStatusKind('error')
+    } finally {
+      setVisibilitySaving(false)
+    }
+  }
+
   async function toggleEntryVisibility() {
     if (!selectedEntry) return
 
@@ -447,19 +478,30 @@ export default function AdminCommandEditor({
             <div className="editor-sidebar-label">CATEGORIES</div>
             <div className="editor-category-list">
               {categories.map((category) => (
-                <button
-                  key={category.id}
-                  className={`editor-category-btn ${category.id === currentCategory?.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setCategoryId(category.id)
-                    setEntryId(category.entries[0]?.id ?? '')
-                    setDraft(toDraft(category.entries[0]))
-                    setSearch('')
-                  }}
-                >
-                  <span>{category.name}</span>
-                  <small>{category.entries.length}</small>
-                </button>
+                <div key={category.id} className={`editor-category-row ${category.is_visible ? '' : 'hidden'}`}>
+                  <button
+                    className={`editor-category-btn ${category.id === currentCategory?.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setCategoryId(category.id)
+                      setEntryId(category.entries[0]?.id ?? '')
+                      setDraft(toDraft(category.entries[0]))
+                      setSearch('')
+                    }}
+                  >
+                    <span>{category.name}</span>
+                    <small>{category.entries.length}</small>
+                  </button>
+                  <button
+                    type="button"
+                    className="editor-visibility-btn"
+                    title={category.is_visible ? 'Hide category from visitors' : 'Show category to visitors'}
+                    aria-label={category.is_visible ? `Hide ${category.name}` : `Show ${category.name}`}
+                    disabled={visibilitySaving}
+                    onClick={() => toggleCategoryVisibility(category)}
+                  >
+                    {category.is_visible ? '●' : '○'}
+                  </button>
+                </div>
               ))}
             </div>
           </div>

@@ -30,7 +30,7 @@ export default async function AdminPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const sections = await getSections()
+  const sections = await getSections(true)
 
   const totalEntries = sections.reduce(
     (total, section) =>
