@@ -198,6 +198,33 @@ export default async function AdminPage() {
             <span>{sections.length} sections</span>
           </section>
 
+          {sections.some((section) => !section.is_visible) && (
+            <section className="dashboard-hidden-panel">
+              <div className="dashboard-hidden-panel-head">
+                <div>
+                  <div className="dashboard-kicker">VISIBILITY</div>
+                  <h2>Hidden sections</h2>
+                  <p>Hidden sections stay here so you can restore them anytime.</p>
+                </div>
+              </div>
+              <div className="dashboard-hidden-list">
+                {sections.filter((section) => !section.is_visible).map((section) => (
+                  <div key={section.id} className="dashboard-hidden-item">
+                    <div>
+                      <strong>{section.name}</strong>
+                      <span>{section.categories.length} categories</span>
+                    </div>
+                    <VisibilityControls
+                      type="section"
+                      id={section.id}
+                      initialVisible={false}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="dashboard-cards">
             {sections.map((section) => {
               const Icon = icons[section.slug] ?? Terminal

@@ -3120,3 +3120,12 @@ body {
 .language-switcher button.active {background:var(--accent);box-shadow:0 1px 8px rgba(216,175,78,.18)}
 
 .visibility-toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(127,138,149,.25);background:rgba(255,255,255,.035);color:#aeb8c2;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s}.visibility-toggle:hover{background:rgba(255,255,255,.07);color:#fff}.visibility-toggle.is-visible{color:#8fd3a8}.visibility-toggle.is-hidden{color:#e0a6a6}.visibility-toggle.compact{padding:5px}.visibility-toggle small{font-size:10px;font-weight:500;opacity:.7;margin-left:2px}.visibility-spin{animation:visibility-spin .8s linear infinite}@keyframes visibility-spin{to{transform:rotate(360deg)}}
+
+.dashboard-hidden-panel{margin-bottom:22px;border:1px solid rgba(216,175,78,.22);border-radius:16px;background:linear-gradient(180deg,rgba(216,175,78,.055),rgba(255,255,255,.015));padding:18px 20px}
+.dashboard-hidden-panel-head h2{margin:3px 0 4px;font-size:18px;color:#f5f0e7}
+.dashboard-hidden-panel-head p{margin:0;color:#8e8a82;font-size:12px}
+.dashboard-hidden-list{display:grid;gap:8px;margin-top:14px}
+.dashboard-hidden-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.07);border-radius:10px;background:rgba(0,0,0,.18)}
+.dashboard-hidden-item>div:first-child{display:flex;flex-direction:column;gap:3px}
+.dashboard-hidden-item strong{font-size:13px;color:#f3eee5}
+.dashboard-hidden-item span{font-size:11px;color:#77736c}
