@@ -250,7 +250,6 @@ export default async function AdminPage() {
                   </div>
                   <div className="dashboard-section-card-body">
                     <div className="dashboard-section-title">{section.name}</div>
-                    <div style={{marginTop:8}}><VisibilityControls type="section" id={section.id} initialVisible={section.is_visible} /></div>
                     <div className="dashboard-section-count">{count}</div>
                     <div className="dashboard-section-meta">
                       {section.categories.length} categories

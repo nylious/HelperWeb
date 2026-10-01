@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Copy, Search, Check, Sparkles } from 'lucide-react'
-import VisibilityControls from '@/components/VisibilityControls'
 import { useLanguage } from '@/components/LanguageSelector'
 import { createClient } from '@/lib/supabase/client'
 import { Category, Entry, Section } from '@/lib/types'
@@ -121,7 +120,6 @@ export default function CommandBrowser({ section }: { section: Section }) {
                 <button className={`choice ${selectedCategory?.id === cat.id ? 'active' : ''}`} style={{flex:1}} onClick={() => { setSelectedCategory(cat); setSelectedEntry(cat.entries[0] ?? null); setSearch(''); setVariant('') }}>
                   <span>{translateLabel(cat.name)}</span><span style={{ marginLeft:'auto', opacity:.65 }}>{cat.entries.length}</span>
                 </button>
-                <VisibilityControls type="category" id={cat.id} initialVisible={cat.is_visible} compact />
               </div>
             ))}
           </div>
